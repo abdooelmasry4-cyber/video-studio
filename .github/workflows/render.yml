@@ -1,0 +1,35 @@
+name: Render videos
+on:
+  push:
+    paths: ['input/**.html']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-noto-color-emoji
+      - run: node render.mjs input output 30
+      - name: Publish videos
+        if: hashFiles('output/*.mp4') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view videos >/dev/null 2>&1 || gh release create videos --title "Videos" --notes "Rendered videos"
+          gh release upload videos output/*.mp4 --clobber
+      - name: Clean rendered inputs
+        if: hashFiles('input/*.html') != ''
+        run: |
+          git config user.name "render-bot"
+          git config user.email "render-bot@users.noreply.github.com"
+          git rm -q input/*.html
+          git commit -m "Clean rendered inputs"
+          git push
