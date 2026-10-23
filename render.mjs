@@ -46,16 +46,20 @@ for (const file of files) {
   const out = path.join(outDir, `${name}.mp4`);
   const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-i', '-',
     ...(m ? ['-i', audioPath] : []), '-c:v', 'libx264', '-preset', 'slow', '-crf', '16', '-pix_fmt', 'yuv420p',
-    ...(m ? ['-c:a', 'aac', '-b:a', '192k', '-shortest'] : []), '-movflags', '+faststart', out], {stdio: ['pipe', 'inherit', 'inherit']});
+    ...(m ? ['-af', 'apad', '-c:a', 'aac', '-b:a', '192k', '-shortest'] : []), '-movflags', '+faststart', out], {stdio: ['pipe', 'inherit', 'inherit']});
+  let ffDone = false; ff.on('close', () => { ffDone = true; });
+  ff.stdin.on('error', () => {}); // ffmpeg may finish a hair early; never crash on that
   const reel = page.locator('#reel');
-  for (let f = 0; f < frames; f++) {
+  for (let f = 0; f < frames && !ffDone; f++) {
     await page.evaluate(([t, dt]) => window.__step(t, dt), [f / FPS, 1000 / FPS]);
     const buf = await reel.screenshot({type: 'jpeg', quality: 95});
-    if (!ff.stdin.write(buf)) await new Promise((r) => ff.stdin.once('drain', r));
+    if (ffDone) break;
+    if (!ff.stdin.write(buf)) await new Promise((r) => { const done = () => { ff.stdin.off('drain', done); ff.off('close', done); r(); }; ff.stdin.once('drain', done); ff.once('close', done); });
     if (f % FPS === 0) process.stdout.write(`\r${name}: ${Math.round((f / frames) * 100)}%`);
   }
   ff.stdin.end();
-  await new Promise((r) => ff.on('close', r));
+  if (!ffDone) await new Promise((r) => ff.on('close', r));
+  if (!fs.existsSync(out) || fs.statSync(out).size < 1000) throw new Error('ffmpeg produced no video for ' + name);
   if (m) fs.unlinkSync(audioPath);
   await page.close();
   console.log(`\r${name}: done → ${out}`);
