@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>استوديو الريندر | Abdo Elmasry × Ahmed Ben Ali</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=Alexandria:wght@700;900&family=Syne:wght@800&display=swap">
+<style>
+:root{--bg:#fff;--soft:#F6F6F4;--ink:#111;--muted:#77756F;--line:#E7E6E1;--acc:#F1C21B;--ok:#12805C;--bad:#C62E2E}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;font-size:15px;line-height:1.65}
+.wrap{max-width:880px;margin:0 auto;padding:0 max(20px,env(safe-area-inset-left))}
+header{border-bottom:1px solid var(--line)}
+header .wrap{display:flex;justify-content:space-between;align-items:center;padding-block:16px}
+.brand{font:800 18px 'Syne',sans-serif;direction:ltr;letter-spacing:.02em}
+.brand b{background:var(--acc);padding:0 6px;border-radius:6px}
+a{color:inherit}
+h1{font:900 clamp(28px,5vw,44px)/1.2 'Alexandria',sans-serif;margin:44px 0 8px}
+.lead{color:var(--muted);margin:0 0 28px}
+.card{border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:18px;background:#fff}
+.card h2{font:700 18px 'Alexandria',sans-serif;margin:0 0 12px;display:flex;align-items:center;gap:10px}
+.num{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font:700 13px 'Syne'}
+.drop{border:2px dashed var(--line);border-radius:16px;padding:34px 16px;text-align:center;cursor:pointer;transition:.2s;background:var(--soft)}
+.drop.over{border-color:var(--ink);background:#fff}
+.drop b{font:700 17px 'Alexandria'}
+.btn{all:unset;cursor:pointer;background:var(--ink);color:#fff;font:700 14px 'Alexandria';padding:10px 18px;border-radius:12px;display:inline-block}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn:focus-visible,.drop:focus-visible{outline:3px solid var(--acc);outline-offset:3px}
+input[type=password],input[type=text]{width:100%;font:inherit;border:1px solid var(--line);border-radius:12px;padding:10px 12px;direction:ltr}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted);font-size:13.5px}
+.status{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;background:var(--soft)}
+.pill{font:700 12px 'Alexandria';padding:3px 12px;border-radius:999px;white-space:nowrap}
+.pill.run{background:#FFF4CC;color:#7A5B00}.pill.ok{background:#DDF3EA;color:var(--ok)}.pill.bad{background:#FBE3E3;color:var(--bad)}.pill.idle{background:#eee;color:#555}
+.spin{width:18px;height:18px;border:3px solid #ddd;border-top-color:var(--ink);border-radius:50%;animation:s 1s linear infinite}
+@keyframes s{to{transform:rotate(360deg)}}
+.vids{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.vid{border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.vid video{width:100%;aspect-ratio:9/16;background:#000;display:block}
+.vid .meta{padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.vid .n{font:700 13px 'Alexandria';word-break:break-all;direction:ltr;text-align:right}
+.vid .acts{display:flex;gap:8px}
+.vid .acts a,.vid .acts button{all:unset;cursor:pointer;font:600 13px 'IBM Plex Sans Arabic';border:1px solid var(--line);border-radius:10px;padding:5px 10px}
+.vid .acts a{background:var(--ink);color:#fff;border-color:var(--ink)}
+details summary{cursor:pointer;font-weight:700}
+ol{padding-inline-start:20px;margin:8px 0}
+.msg{min-height:20px;font-size:13.5px;margin-top:10px}
+.msg.ok{color:var(--ok)}.msg.bad{color:var(--bad)}
+footer{color:var(--muted);font-size:13px;text-align:center;padding:30px 0 40px}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="brand">ABDO ELMASRY × <b>AHMED BEN ALI</b></div><a href="https://abdooelmasry4-cyber.github.io/motion-studio/" class="muted">مكتبة الاستايلات ←</a></div></header>
+<main class="wrap">
+  <h1>استوديو الريندر</h1>
+  <p class="lead">ارفع ملف المعاينة (HTML) واستلم الفيديو MP4 بجودة 1080×1920، من غير Claude ومن غير برامج.</p>
+
+  <section class="card" id="setup">
+    <h2><span class="num">0</span> الإعداد (مرة واحدة بس)</h2>
+    <div id="setupDone" hidden><span class="pill ok">متوصل ✓</span> <span class="muted" id="repoLbl"></span> <button class="btn ghost" id="logout" type="button" style="margin-inline-start:10px">تغيير المفتاح</button></div>
+    <div id="setupForm">
+      <details open><summary>إزاي تجيب المفتاح (Token)</summary>
+        <ol>
+          <li>افتح <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">صفحة إنشاء مفتاح جديد على جيتهاب</a>.</li>
+          <li>اكتب أي اسم، ومن <b>Repository access</b> اختار <b>Only select repositories</b> ← اختار ريبو الاستوديو ده.</li>
+          <li>من <b>Permissions</b>: خلي <b>Contents</b> = Read and write، و<b>Actions</b> = Read-only.</li>
+          <li>اضغط <b>Generate token</b> وانسخه والزقه هنا.</li>
+        </ol>
+        <p class="muted">المفتاح بيتحفظ على المتصفح بتاعك بس، ومحدش غيرك يقدر يشوفه.</p>
+      </details>
+      <div class="row" style="margin-top:10px"><input type="password" id="tok" placeholder="github_pat_..." autocomplete="off"><button class="btn" id="saveTok" type="button">حفظ</button></div>
+      <div class="row" style="margin-top:8px"><input type="text" id="repo" value="" aria-label="الريبو"></div>
+    </div>
+    <div class="msg" id="setupMsg"></div>
+  </section>
+
+  <section class="card">
+    <h2><span class="num">1</span> ارفع ملف المعاينة</h2>
+    <label class="drop" id="drop" tabindex="0">
+      <b>اسحب ملف الـHTML هنا</b><br><span class="muted">أو اضغط تختاره من جهازك (الملف اللي نزل من زرار «💾 حفظ ملف بالألوان دي»)</span>
+      <input type="file" id="file" accept=".html,text/html" hidden multiple>
+    </label>
+    <div class="msg" id="upMsg"></div>
+  </section>
+
+  <section class="card">
+    <h2><span class="num">2</span> حالة الريندر</h2>
+    <div class="status" id="status"><span class="pill idle">مستني</span><span class="muted">مفيش ريندر شغال دلوقتي.</span></div>
+  </section>
+
+  <section class="card">
+    <h2><span class="num">3</span> الفيديوهات الجاهزة</h2>
+    <div class="vids" id="vids"><p class="muted">لسه مفيش فيديوهات.</p></div>
+  </section>
+</main>
+<footer>Abdo Elmasry × Ahmed Ben Ali — Motion Studio</footer>
+
+<script>
+const LS = {get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} }};
+const $ = id => document.getElementById(id);
+const AUTO = (location.hostname.endsWith('.github.io') && location.pathname.split('/')[1]) ? location.hostname.split('.')[0] + '/' + location.pathname.split('/')[1] : 'abdooelmasry4-cyber/video-studio';
+let TOKEN = LS.get('vs_token'), REPO = LS.get('vs_repo') || AUTO;
+const api = async (path, opt = {}) => {
+  const r = await fetch('https://api.github.com/repos/' + REPO + path, {...opt, headers: {Accept: 'application/vnd.github+json', Authorization: 'Bearer ' + TOKEN, 'X-GitHub-Api-Version': '2022-11-28', ...(opt.headers || {})}});
+  if (r.status === 204) return null;
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw Object.assign(new Error(j.message || r.status), {status: r.status});
+  return j;
+};
+const msg = (id, t, cls = '') => { const el = $(id); el.textContent = t; el.className = 'msg ' + cls; };
+function showSetup(){
+  const ok = !!TOKEN;
+  $('setupDone').hidden = !ok; $('setupForm').hidden = ok; $('repoLbl').textContent = REPO;
+}
+$('saveTok').onclick = async () => {
+  TOKEN = $('tok').value.trim(); REPO = $('repo').value.trim();
+  if (!TOKEN) return msg('setupMsg', 'الزق المفتاح الأول.', 'bad');
+  try { await api(''); LS.set('vs_token', TOKEN); LS.set('vs_repo', REPO); msg('setupMsg', 'تمام، اتوصل بالريبو ✓', 'ok'); showSetup(); refresh(); }
+  catch (e) { TOKEN = null; msg('setupMsg', 'المفتاح أو اسم الريبو غلط: ' + e.message, 'bad'); }
+};
+$('logout').onclick = () => { LS.set('vs_token', null); TOKEN = null; showSetup(); };
+
+const slug = s => (s.replace(/\.html?$/i, '').replace(/[^A-Za-z0-9_-]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 40) || 'video');
+async function upload(files){
+  if (!TOKEN) return msg('upMsg', 'اعمل الإعداد (خطوة 0) الأول.', 'bad');
+  for (const f of files) {
+    if (!/\.html?$/i.test(f.name)) { msg('upMsg', `«${f.name}» مش ملف HTML.`, 'bad'); continue; }
+    msg('upMsg', `بيرفع ${f.name}…`);
+    const stamp = new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '');
+    const name = `${slug(f.name)}_${stamp}.html`;
+    const buf = new Uint8Array(await f.arrayBuffer()); let bin = ''; for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000));
+    try {
+      await api('/contents/input/' + encodeURIComponent(name), {method: 'PUT', body: JSON.stringify({message: 'Render ' + name, content: btoa(bin)})});
+      msg('upMsg', `✓ اترفع. الريندر هيبدأ خلال ثواني، تابعه في خطوة 2.`, 'ok');
+    } catch (e) { msg('upMsg', 'الرفع ما تمّش: ' + e.message, 'bad'); }
+  }
+  setTimeout(refresh, 4000);
+}
+const drop = $('drop'), fi = $('file');
+drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('over'); });
+drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('over'); upload([...e.dataTransfer.files]); });
+fi.addEventListener('change', () => { upload([...fi.files]); fi.value = ''; });
+drop.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fi.click(); } });
+
+const fmtMin = s => s < 60 ? `${Math.round(s)} ث` : `${Math.floor(s / 60)} د ${Math.round(s % 60)} ث`;
+async function refresh(){
+  if (!TOKEN) return;
+  try {
+    const runs = await api('/actions/workflows/render.yml/runs?per_page=1');
+    const r = runs.workflow_runs && runs.workflow_runs[0];
+    const st = $('status');
+    if (!r) st.innerHTML = '<span class="pill idle">مستني</span><span class="muted">لسه مفيش ريندر.</span>';
+    else if (r.status !== 'completed') st.innerHTML = `<div class="spin"></div><span class="pill run">بيترندر</span><span class="muted">بقاله ${fmtMin((Date.now() - new Date(r.run_started_at || r.created_at)) / 1000)} · الفيديو 40 ثانية بياخد حوالي 5 دقايق</span>`;
+    else if (r.conclusion === 'success') st.innerHTML = `<span class="pill ok">خلص ✓</span><span class="muted">آخر ريندر خلص ${new Date(r.updated_at).toLocaleString('ar-EG')}</span>`;
+    else st.innerHTML = `<span class="pill bad">حصل خطأ</span><a class="muted" href="${r.html_url}" target="_blank" rel="noopener">افتح التفاصيل على جيتهاب</a>`;
+  } catch (e) { $('status').innerHTML = `<span class="pill bad">مش متوصل</span><span class="muted">${e.message}</span>`; }
+  try {
+    const rel = await api('/releases/tags/videos');
+    const assets = (rel.assets || []).filter(a => a.name.endsWith('.mp4')).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    $('vids').innerHTML = assets.length ? '' : '<p class="muted">لسه مفيش فيديوهات.</p>';
+    assets.forEach(a => {
+      const d = document.createElement('div'); d.className = 'vid';
+      d.innerHTML = `<video controls preload="metadata" src="${a.browser_download_url}"></video><div class="meta"><span class="n"></span><span class="muted">${(a.size / 1048576).toFixed(1)} MB · ${new Date(a.created_at).toLocaleDateString('ar-EG')}</span><div class="acts"><a href="${a.browser_download_url}" download>⬇ تحميل</a><button type="button">مسح</button></div></div>`;
+      d.querySelector('.n').textContent = a.name;
+      const del = d.querySelector('button');
+      del.onclick = async () => { if (del.dataset.s !== '1') { del.dataset.s = '1'; del.textContent = 'متأكد؟'; setTimeout(() => { del.dataset.s = ''; del.textContent = 'مسح'; }, 3000); return; }
+        try { await api('/releases/assets/' + a.id, {method: 'DELETE'}); refresh(); } catch (e) { del.textContent = 'ما اتمسحش'; } };
+      $('vids').appendChild(d);
+    });
+  } catch (e) { if (e.status !== 404) $('vids').innerHTML = `<p class="muted">مش قادر أجيب الفيديوهات: ${e.message}</p>`; }
+}
+$('repo').value = REPO;
+showSetup(); refresh(); setInterval(refresh, 15000);
+</script>
+</body>
+</html>

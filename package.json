@@ -1,0 +1,7 @@
+{
+  "name": "motion-studio-renderer",
+  "private": true,
+  "type": "module",
+  "scripts": { "render": "node render.mjs input output 30" },
+  "dependencies": { "playwright": "1.47.2" }
+}
