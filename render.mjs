@@ -51,7 +51,7 @@ for (const file of files) {
   ff.stdin.on('error', () => {}); // ffmpeg may finish a hair early; never crash on that
   const reel = page.locator('#reel');
   for (let f = 0; f < frames && !ffDone; f++) {
-    await page.evaluate(([t, dt]) => window.__step(t, dt), [f / FPS, 1000 / FPS]);
+    await page.evaluate(async ([t, dt]) => { window.__step(t, dt); if (window.__settle) await window.__settle(); }, [f / FPS, 1000 / FPS]);
     const buf = await reel.screenshot({type: 'jpeg', quality: 95});
     if (ffDone) break;
     if (!ff.stdin.write(buf)) await new Promise((r) => { const done = () => { ff.stdin.off('drain', done); ff.off('close', done); r(); }; ff.stdin.once('drain', done); ff.once('close', done); });
