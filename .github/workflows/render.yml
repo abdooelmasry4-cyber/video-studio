@@ -16,8 +16,9 @@ jobs:
           node-version: 20
       - run: npm install
       - run: npx playwright install --with-deps chromium
-      - run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-noto-color-emoji
-      - run: node render.mjs input output 30
+      - name: Get ffmpeg (npm static build, no apt)
+        run: npm install --no-save ffmpeg-static@5.2.0
+      - run: FFMPEG_PATH=$(node -e "console.log(require('ffmpeg-static'))") node render.mjs input output 30
       - name: Publish videos
         if: hashFiles('output/*.mp4') != ''
         env:

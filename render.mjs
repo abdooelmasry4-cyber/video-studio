@@ -44,7 +44,7 @@ for (const file of files) {
   });
   const frames = Math.ceil(dur * FPS);
   const out = path.join(outDir, `${name}.mp4`);
-  const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-i', '-',
+  const ff = spawn(process.env.FFMPEG_PATH || 'ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-i', '-',
     ...(m ? ['-i', audioPath] : []), '-c:v', 'libx264', '-preset', 'slow', '-crf', '16', '-pix_fmt', 'yuv420p',
     ...(m ? ['-af', 'apad', '-c:a', 'aac', '-b:a', '192k', '-shortest'] : []), '-movflags', '+faststart', out], {stdio: ['pipe', 'inherit', 'inherit']});
   let ffDone = false; ff.on('close', () => { ffDone = true; });
