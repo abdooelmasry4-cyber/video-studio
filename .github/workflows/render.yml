@@ -15,10 +15,9 @@ jobs:
         with:
           node-version: 20
       - run: npm install
-      - run: npx playwright install --with-deps chromium
       - name: Get ffmpeg (npm static build, no apt)
         run: npm install --no-save ffmpeg-static@5.2.0
-      - run: FFMPEG_PATH=$(node -e "console.log(require('ffmpeg-static'))") node render.mjs input output 30
+      - run: CHROME_PATH=$(which google-chrome || which google-chrome-stable || which chromium) FFMPEG_PATH=$(node -e "console.log(require('ffmpeg-static'))") node render.mjs input output 30
       - name: Publish videos
         if: hashFiles('output/*.mp4') != ''
         env:
