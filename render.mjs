@@ -44,9 +44,11 @@ for (const file of files) {
   });
   const frames = Math.ceil(dur * FPS);
   const out = path.join(outDir, `${name}.mp4`);
-  const ff = spawn(process.env.FFMPEG_PATH || 'ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-i', '-',
-    ...(m ? ['-i', audioPath] : []), '-c:v', 'libx264', '-preset', 'slow', '-crf', '16', '-pix_fmt', 'yuv420p',
-    ...(m ? ['-af', 'apad', '-c:a', 'aac', '-b:a', '192k', '-shortest'] : []), '-movflags', '+faststart', out], {stdio: ['pipe', 'inherit', 'inherit']});
+  const FF = process.env.FFMPEG_PATH || 'ffmpeg';
+  // pass 1: picture only (muxing audio against a slow frame pipe made ffmpeg drop the last seconds of sound)
+  const vidOnly = m ? path.join(outDir, `${name}.video.mp4`) : out;
+  const ff = spawn(FF, ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-i', '-',
+    '-c:v', 'libx264', '-preset', 'slow', '-crf', '16', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', vidOnly], {stdio: ['pipe', 'inherit', 'inherit']});
   let ffDone = false; ff.on('close', () => { ffDone = true; });
   ff.stdin.on('error', () => {}); // ffmpeg may finish a hair early; never crash on that
   const reel = page.locator('#reel');
@@ -59,8 +61,15 @@ for (const file of files) {
   }
   ff.stdin.end();
   if (!ffDone) await new Promise((r) => ff.on('close', r));
-  if (!fs.existsSync(out) || fs.statSync(out).size < 1000) throw new Error('ffmpeg produced no video for ' + name);
-  if (m) fs.unlinkSync(audioPath);
+  if (!fs.existsSync(vidOnly) || fs.statSync(vidOnly).size < 1000) throw new Error('ffmpeg produced no video for ' + name);
+  // pass 2: add the full voice track, padded/trimmed to the exact picture length
+  if (m) {
+    const vlen = frames / FPS;
+    await new Promise((res, rej) => { const p2 = spawn(FF, ['-y', '-loglevel', 'error', '-i', vidOnly, '-i', audioPath, '-map', '0:v:0', '-map', '1:a:0',
+      '-c:v', 'copy', '-af', 'apad', '-t', vlen.toFixed(3), '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', out], {stdio: 'inherit'});
+      p2.on('close', (c) => c === 0 ? res() : rej(new Error('audio mux failed for ' + name))); });
+    fs.unlinkSync(vidOnly); fs.unlinkSync(audioPath);
+  }
   await page.close();
   console.log(`\r${name}: done → ${out}`);
 }
