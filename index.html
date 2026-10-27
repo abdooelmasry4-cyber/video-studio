@@ -46,6 +46,52 @@ details summary{cursor:pointer;font-weight:700}
 ol{padding-inline-start:20px;margin:8px 0}
 .msg{min-height:20px;font-size:13.5px;margin-top:10px}
 .msg.ok{color:var(--ok)}.msg.bad{color:var(--bad)}
+
+.ed{max-width:1320px;margin:0 auto 18px;padding:0 max(20px,env(safe-area-inset-left))}
+.ed .card{padding:18px}
+.edtop{display:grid;grid-template-columns:300px 1fr;gap:18px;align-items:start}
+@media(max-width:760px){.edtop{grid-template-columns:1fr}.pv{margin:0 auto}}
+.pv{width:300px;aspect-ratio:9/16;border-radius:16px;overflow:hidden;background:#000;position:relative}
+.pv iframe{border:0;width:100%;height:100%;display:block}
+.pv .ld[hidden]{display:none}
+.pv .ld{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font:700 14px 'Alexandria';background:#000}
+.insp{display:flex;flex-direction:column;gap:14px}
+.box{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--soft)}
+.box h3{font:700 15px 'Alexandria';margin:0 0 10px}
+.box label{font-size:13px;color:var(--muted);display:block;margin:8px 0 4px}
+.box input[type=text]{direction:rtl;font:700 18px 'IBM Plex Sans Arabic'}
+.box select{font:inherit;border:1px solid var(--line);border-radius:10px;padding:8px;width:100%;background:#fff}
+.keys{display:flex;gap:8px;flex-wrap:wrap}
+.keys button{all:unset;cursor:pointer;padding:6px 12px;border-radius:10px;border:2px solid transparent;font:700 13px 'Alexandria';background:#222;color:#fff}
+.keys button.on{border-color:#111;box-shadow:0 0 0 2px var(--acc)}
+.sm{all:unset;cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:10px;padding:6px 10px;font:600 13px 'IBM Plex Sans Arabic'}
+.sm.red{color:var(--bad);border-color:#F1C9C9}
+.sw{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.sw .lb{font:700 12px 'Alexandria';min-width:64px}
+.sw button{all:unset;cursor:pointer;width:24px;height:24px;border-radius:7px;border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.sw button.on{box-shadow:0 0 0 2px var(--ink)}
+.sw input[type=color]{width:28px;height:28px;border:0;padding:0;background:none;cursor:pointer}
+.tbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:16px 0 10px}
+.tbar .tm{font:600 14px monospace;direction:ltr;min-width:110px}
+.tl{display:grid;grid-template-columns:78px 1fr;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#15171d;direction:ltr;user-select:none;-webkit-user-select:none}
+.tl .lbls div{display:flex;align-items:center;justify-content:center;font:700 11.5px 'Alexandria';color:#aab;border-bottom:1px solid #23262f;background:#1b1e26;direction:rtl;box-sizing:border-box}
+.tl .sc{overflow-x:auto;overflow-y:hidden;position:relative}
+.tl .in{position:relative}
+.tl .ru{height:26px;border-bottom:1px solid #23262f;position:relative;cursor:pointer;box-sizing:border-box}
+.tl .ru span{position:absolute;top:5px;font:500 10.5px monospace;color:#778;transform:translateX(-50%)}
+.tl .ru i{position:absolute;bottom:0;width:1px;height:6px;background:#445}
+.tl canvas{display:block;height:64px;border-bottom:1px solid #23262f;cursor:pointer;box-sizing:border-box}
+.tl .tr{position:relative;border-bottom:1px solid #23262f;box-sizing:border-box}
+.tl .tr.caps{height:46px}.tl .tr.fx{height:64px}
+.wd{position:absolute;top:7px;height:32px;border-radius:7px;background:#2b3040;color:#fff;font:700 12.5px 'IBM Plex Sans Arabic';display:flex;align-items:center;justify-content:center;overflow:hidden;white-space:nowrap;cursor:grab;border:1.5px solid #3a4054;box-sizing:border-box;padding:0 3px;direction:rtl;touch-action:none}
+.wd.k1{background:#5a4a0c;border-color:#F5C518;color:#FFE27A}.wd.k2{background:#5a1f22;border-color:#EF5350;color:#FFB4B2}.wd.k3{background:#0f4a43;border-color:#26A69A;color:#9DEBDF}
+.wd.pg{border-left:3px solid #fff}
+.wd.sel,.fxm.sel{outline:2px solid #fff;outline-offset:1px;z-index:3}
+.fxm{position:absolute;height:24px;border-radius:12px;background:#2962FF;color:#fff;font:700 11.5px 'Alexandria';display:flex;align-items:center;gap:4px;padding:0 9px 0 5px;white-space:nowrap;cursor:grab;transform:translateX(-5px);direction:rtl;touch-action:none}
+.fxm::before{content:'';width:8px;height:8px;border-radius:50%;background:#fff;flex:none}
+.ph{position:absolute;top:0;bottom:0;width:2px;background:#FF3B30;pointer-events:none;z-index:5}
+.ph::before{content:'';position:absolute;top:0;left:-5px;border:6px solid transparent;border-top-color:#FF3B30}
+.hint{font-size:13px;color:var(--muted)}
 footer{color:var(--muted);font-size:13px;text-align:center;padding:30px 0 40px}
 </style>
 </head>
@@ -77,19 +123,51 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding:30px 0 40px}
   <section class="card">
     <h2><span class="num">1</span> ارفع ملف المعاينة</h2>
     <label class="drop" id="drop" tabindex="0">
-      <b>اسحب ملف الـHTML هنا</b><br><span class="muted">أو اضغط تختاره من جهازك (الملف اللي نزل من زرار «💾 حفظ ملف بالألوان دي»)</span>
+      <b>اسحب ملف الـHTML هنا</b><br><span class="muted">أو اضغط تختاره من جهازك. لو الملف قابل للتعديل هيفتحلك المحرر، ولو قديم هيروح للريندر على طول.</span>
       <input type="file" id="file" accept=".html,text/html" hidden multiple>
     </label>
     <div class="msg" id="upMsg"></div>
   </section>
 
+</main>
+
+<section class="ed" id="editor" hidden>
+  <div class="card">
+    <h2><span class="num">2</span> التعديل <span class="muted" id="edName" style="font:600 13px 'IBM Plex Sans Arabic';direction:ltr"></span></h2>
+    <div class="edtop">
+      <div class="pv"><iframe id="pv" title="معاينة"></iframe><div class="ld" id="pvLd">بيحمّل المعاينة…</div></div>
+      <div class="insp">
+        <div class="box" id="insp"><h3>اختار حاجة من التايملاين</h3><p class="hint">• اضغط على كلمة علشان تعدّل نصها أو لونها، واسحبها يمين وشمال علشان تظبط توقيتها.<br>• اضغط على مؤثر صوتي علشان تغيّر نوعه أو صوته أو تمسحه، واسحبه لمكانه.<br>• اضغط على المسطرة أو موجة الصوت علشان تروح لأي لحظة. المسافة = تشغيل/إيقاف.</p></div>
+        <div class="box" id="colBox"><h3>الألوان</h3><div id="cols"></div></div>
+        <div class="row">
+          <button class="btn" id="exportBtn" type="button">🎬 تصدير الفيديو</button>
+          <button class="btn ghost" id="saveHtml" type="button">⬇ حفظ ملف HTML</button>
+          <button class="btn ghost" id="closeEd" type="button">قفل</button>
+        </div>
+        <div class="msg" id="edMsg"></div>
+      </div>
+    </div>
+    <div class="tbar">
+      <button class="btn" id="tPlay" type="button">▶ تشغيل</button>
+      <span class="tm" id="tTime">0.00 / 0.00</span>
+      <button class="sm" id="addFx" type="button">＋ مؤثر صوتي هنا</button>
+      <button class="sm" id="undo" type="button">↶ تراجع</button>
+      <span class="muted" style="margin-inline-start:auto">تكبير</span><input type="range" id="zoom" min="40" max="260" value="160" aria-label="تكبير التايملاين">
+    </div>
+    <div class="tl" id="tl">
+      <div class="lbls"><div style="height:26px"></div><div style="height:64px">صوت أحمد</div><div style="height:46px">الكلام</div><div style="height:64px">المؤثرات</div></div>
+      <div class="sc" id="tsc"><div class="in" id="tin"><div class="ru" id="ru"></div><canvas id="wave"></canvas><div class="tr caps" id="tcaps"></div><div class="tr fx" id="tfx"></div><div class="ph" id="ph"></div></div></div>
+    </div>
+  </div>
+</section>
+<main class="wrap">
   <section class="card">
-    <h2><span class="num">2</span> حالة الريندر</h2>
+    <h2><span class="num">3</span> حالة الريندر</h2>
     <div class="status" id="status"><span class="pill idle">مستني</span><span class="muted">مفيش ريندر شغال دلوقتي.</span></div>
   </section>
 
   <section class="card">
-    <h2><span class="num">3</span> الفيديوهات الجاهزة</h2>
+    <h2><span class="num">4</span> الفيديوهات الجاهزة</h2>
     <div class="vids" id="vids"><p class="muted">لسه مفيش فيديوهات.</p></div>
   </section>
 </main>
@@ -139,9 +217,177 @@ async function upload(files){
 const drop = $('drop'), fi = $('file');
 drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('over'); });
 drop.addEventListener('dragleave', () => drop.classList.remove('over'));
-drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('over'); upload([...e.dataTransfer.files]); });
-fi.addEventListener('change', () => { upload([...fi.files]); fi.value = ''; });
+drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('over'); route([...e.dataTransfer.files]); });
+fi.addEventListener('change', () => { route([...fi.files]); fi.value = ''; });
 drop.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fi.click(); } });
+
+/* ================= timeline editor ================= */
+const SFX_AR = {whoosh_fast: 'ووش سريع', whoosh_big: 'ووش كبير', swipe: 'سحبة', impact: 'خبطة', hit_small: 'خبطة صغيرة', stamp: 'ختم', pop: 'بوب', pencil: 'قلم', marker: 'ماركر', paper: 'ورق', coins: 'فلوس', ding: 'دينج', buzz: 'غلط', riser: 'رايزر', glitch: 'جليتش', typing: 'كتابة', count: 'عدّاد', click: 'كليك'};
+const KEYS = [['عادي', 0, '#2b3040'], ['أصفر', 1, '#F5C518'], ['أحمر', 2, '#EF5350'], ['أخضر', 3, '#26A69A']];
+const EDRE = /(<script type="application\/json" id="edit-data">)([\s\S]*?)(<\/script>)/;
+let EDF = null; // {name, html, ed, colors:{}}
+let PX = 160, SEL = null, UNDO = [], pvWin = null, applyT = null;
+const pvEl = $('pv');
+const clone = o => JSON.parse(JSON.stringify(o));
+const esc = s => s.replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+
+async function route(files){
+  for (const f of files) {
+    if (!/\.html?$/i.test(f.name)) { msg('upMsg', `«${f.name}» مش ملف HTML.`, 'bad'); continue; }
+    const html = await f.text(); const m = html.match(EDRE);
+    if (m) { openEditor(f.name, html, JSON.parse(m[2])); msg('upMsg', '✓ الملف اتفتح في المحرر تحت.', 'ok'); return; }
+    upload([f]);
+  }
+}
+function openEditor(name, html, ed){
+  EDF = {name, html, ed, colors: {}}; SEL = null; UNDO = [];
+  $('editor').hidden = false; $('edName').textContent = name; $('pvLd').hidden = false; msg('edMsg', '');
+  const fit = '<style id="__fit">html,body{margin:0!important;padding:0!important;background:#000!important;display:block!important;min-height:0!important;overflow:hidden!important}body>*:not(#reel){display:none!important}#reel{width:100vw!important;height:177.78vw!important;max-width:none!important;border-radius:0!important;box-shadow:none!important}</style>';
+  const url = URL.createObjectURL(new Blob([html.replace('</head>', fit + '</head>')], {type: 'text/html'}));
+  pvEl.onload = async () => {
+    pvWin = pvEl.contentWindow;
+    try { await pvWin.document.fonts.ready; } catch (e) {}
+    $('pvLd').hidden = true; buildCols(); drawAll(); seek(0.5);
+    try { const p = await pvWin.__voicePeaks(Math.ceil(EDF.ed.dur * 40)); EDF.peaks = p; drawWave(); } catch (e) {}
+  };
+  pvEl.src = url;
+  $('editor').scrollIntoView({behavior: 'smooth', block: 'start'});
+}
+$('closeEd').onclick = () => { if (pvWin && pvWin.pause) pvWin.pause(); $('editor').hidden = true; pvEl.src = 'about:blank'; EDF = null; };
+
+/* ---- state changes ---- */
+function snap(){ UNDO.push(clone(EDF.ed)); if (UNDO.length > 80) UNDO.shift(); }
+function changed(redraw = true){
+  if (redraw) drawAll();
+  clearTimeout(applyT); applyT = setTimeout(() => { if (pvWin && pvWin.__setEdit) pvWin.__setEdit(clone(EDF.ed)); }, 220);
+}
+$('undo').onclick = () => { if (!UNDO.length) return; EDF.ed = UNDO.pop(); SEL = null; showInsp(); changed(); };
+
+/* ---- playback ---- */
+const vo = () => pvWin && pvWin.document.getElementById('vo');
+function seek(t){ const v = vo(); if (!v) return; t = Math.max(0, Math.min(EDF.ed.dur, t)); v.currentTime = t; if (v.paused) pvWin.render(t); movePh(t); }
+function toggle(){ const v = vo(); if (!v) return; if (v.paused) pvWin.play(); else pvWin.pause(); }
+$('tPlay').onclick = toggle;
+document.addEventListener('keydown', e => {
+  if (!EDF || $('editor').hidden || /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;
+  if (e.code === 'Space') { e.preventDefault(); toggle(); }
+  if ((e.key === 'Delete' || e.key === 'Backspace') && SEL && SEL.type === 'fx') { e.preventDefault(); delFx(); }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); $('undo').click(); }
+});
+function movePh(t){ $('ph').style.left = (t * PX) + 'px'; $('tTime').textContent = `${t.toFixed(2)} / ${EDF.ed.dur.toFixed(2)}`; }
+(function tick(){
+  const v = vo();
+  if (EDF && v) {
+    const t = v.currentTime; movePh(t); $('tPlay').textContent = v.paused ? '▶ تشغيل' : '⏸ إيقاف';
+    if (!v.paused) { const sc = $('tsc'), x = t * PX; if (x < sc.scrollLeft + 40 || x > sc.scrollLeft + sc.clientWidth - 80) sc.scrollLeft = x - 120; }
+  }
+  requestAnimationFrame(tick);
+})();
+const tAt = e => { const r = $('tin').getBoundingClientRect(); return (e.clientX - r.left) / PX; };
+$('ru').addEventListener('pointerdown', e => seek(tAt(e)));
+$('wave').addEventListener('pointerdown', e => seek(tAt(e)));
+$('zoom').oninput = e => { const sc = $('tsc'), mid = (sc.scrollLeft + sc.clientWidth / 2) / PX; PX = +e.target.value; drawAll(); drawWave(); sc.scrollLeft = mid * PX - sc.clientWidth / 2; };
+
+/* ---- drawing ---- */
+function pageStarts(W){ const s = new Set([0]); let st = 0; for (let k = 1; k < W.length; k++) if (k - st >= 4 || W[k][1] - W[k - 1][1] > .42 || /[؟.،]$/.test(W[k - 1][0])) { s.add(k); st = k; } return s; }
+function drawAll(){
+  if (!EDF) return;
+  const D = EDF.ed.dur, W = D * PX; $('tin').style.width = W + 'px';
+  let ru = ''; const step = PX > 150 ? .5 : PX > 70 ? 1 : 2;
+  for (let s = 0; s <= D; s += step) ru += `<i style="left:${s * PX}px"></i>` + (s % (step * 2) === 0 ? `<span style="left:${s * PX}px">${s.toFixed(s % 1 ? 1 : 0)}s</span>` : '');
+  $('ru').innerHTML = ru;
+  const words = EDF.ed.words, ps = pageStarts(words); let h = '';
+  words.forEach((w, i) => { const nx = i + 1 < words.length ? words[i + 1][1] : Math.min(D, w[1] + .6); const wd = Math.max(16, (nx - w[1]) * PX - 2);
+    h += `<div class="wd${w[2] ? ' k' + w[2] : ''}${ps.has(i) ? ' pg' : ''}${SEL && SEL.type === 'w' && SEL.i === i ? ' sel' : ''}" data-i="${i}" style="left:${w[1] * PX}px;width:${wd}px" title="${esc(w[0])}">${esc(w[0])}</div>`; });
+  $('tcaps').innerHTML = h;
+  const fx = EDF.ed.sfx.map((f, i) => [f, i]).sort((a, b) => a[0][1] - b[0][1]); const rows = [-1e9, -1e9]; h = '';
+  for (const [f, i] of fx) { const lab = SFX_AR[f[0]] || f[0], x = f[1] * PX, w = lab.length * 8 + 28; let r = x > rows[0] ? 0 : x > rows[1] ? 1 : (rows[0] < rows[1] ? 0 : 1); rows[r] = x + w;
+    h += `<div class="fxm${SEL && SEL.type === 'fx' && SEL.i === i ? ' sel' : ''}" data-i="${i}" style="left:${x}px;top:${6 + r * 29}px">${esc(lab)}</div>`; }
+  $('tfx').innerHTML = h;
+}
+function drawWave(){
+  const c = $('wave'), D = EDF.ed.dur, W = Math.min(32000, Math.ceil(D * PX)); c.width = W; c.height = 64; c.style.width = W + 'px';
+  const g = c.getContext('2d'); g.fillStyle = '#15171d'; g.fillRect(0, 0, W, 64); const p = EDF.peaks; if (!p) return;
+  g.fillStyle = '#5B8CFF'; for (let x = 0; x < W; x++) { const v = p[Math.min(p.length - 1, Math.floor(x / W * p.length))] || 0, hh = Math.max(1, v * 58); g.fillRect(x, 32 - hh / 2, 1, hh); }
+}
+
+/* ---- dragging + selecting ---- */
+function dragger(track, type){
+  track.addEventListener('pointerdown', e => {
+    const el = e.target.closest(type === 'w' ? '.wd' : '.fxm'); if (!el) return;
+    e.preventDefault(); const i = +el.dataset.i, x0 = e.clientX; let moved = false, snapped = false;
+    const arr = type === 'w' ? EDF.ed.words : EDF.ed.sfx, t0 = arr[i][1];
+    el.setPointerCapture(e.pointerId);
+    const mv = ev => { const dx = ev.clientX - x0; if (!moved && Math.abs(dx) < 4) return; if (!snapped) { snap(); snapped = true; } moved = true;
+      let t = t0 + dx / PX;
+      if (type === 'w') { const lo = i ? arr[i - 1][1] + .03 : 0, hi = i + 1 < arr.length ? arr[i + 1][1] - .03 : EDF.ed.dur - .05; t = Math.max(lo, Math.min(hi, t)); }
+      else t = Math.max(0, Math.min(EDF.ed.dur - .05, t));
+      arr[i][1] = Math.round(t * 1000) / 1000; el.style.left = (arr[i][1] * PX) + 'px'; seekQuiet(arr[i][1]); };
+    const up = () => { el.removeEventListener('pointermove', mv); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up);
+      SEL = {type, i}; showInsp(); if (moved) changed(); else { drawAll(); seek(arr[i][1]); } };
+    el.addEventListener('pointermove', mv); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+  });
+}
+function seekQuiet(t){ const v = vo(); if (v && v.paused) { v.currentTime = t; pvWin.render(t); movePh(t); } }
+dragger($('tcaps'), 'w'); dragger($('tfx'), 'fx');
+
+/* ---- inspector ---- */
+function nudge(d){ const arr = SEL.type === 'w' ? EDF.ed.words : EDF.ed.sfx, i = SEL.i; snap(); let t = arr[i][1] + d; if (SEL.type === 'w') { const lo = i ? arr[i - 1][1] + .03 : 0, hi = i + 1 < arr.length ? arr[i + 1][1] - .03 : EDF.ed.dur - .05; t = Math.max(lo, Math.min(hi, t)); } arr[i][1] = Math.max(0, Math.round(t * 1000) / 1000); changed(); showInsp(); seek(arr[i][1]); }
+function delFx(){ snap(); EDF.ed.sfx.splice(SEL.i, 1); SEL = null; showInsp(); changed(); }
+function showInsp(){
+  const b = $('insp');
+  if (!SEL) { b.innerHTML = '<h3>اختار حاجة من التايملاين</h3><p class="hint">اضغط على كلمة أو مؤثر صوتي علشان تعدّله.</p>'; return; }
+  if (SEL.type === 'w') {
+    const w = EDF.ed.words[SEL.i];
+    b.innerHTML = `<h3>كلمة في الكابشن</h3><label>النص</label><input type="text" id="iTxt"><label>اللون</label><div class="keys">${KEYS.map(([n, k, c]) => `<button type="button" data-k="${k}" class="${(w[2] || 0) === k ? 'on' : ''}" style="background:${c};${k === 1 ? 'color:#111' : ''}">${n}</button>`).join('')}</div>
+      <label>التوقيت: <b dir="ltr">${w[1].toFixed(2)}s</b></label><div class="row"><button class="sm" id="iL" type="button">−0.05</button><button class="sm" id="iR" type="button">+0.05</button><button class="sm" id="iPl" type="button">▶ اسمع من هنا</button></div>`;
+    const ip = $('iTxt'); ip.value = w[0]; let first = true;
+    ip.oninput = () => { if (first) { snap(); first = false; } w[0] = ip.value; changed(); };
+    b.querySelectorAll('.keys button').forEach(x => x.onclick = () => { snap(); w[2] = +x.dataset.k; changed(); showInsp(); });
+  } else {
+    const f = EDF.ed.sfx[SEL.i]; const names = (pvWin && pvWin.SFX_NAMES ? pvWin.SFX_NAMES() : Object.keys(SFX_AR));
+    b.innerHTML = `<h3>مؤثر صوتي</h3><label>النوع</label><select id="iType">${names.map(n => `<option value="${n}"${n === f[0] ? ' selected' : ''}>${SFX_AR[n] || n}</option>`).join('')}</select>
+      <label>قوة الصوت: <b id="iVolL">${Math.round(f[2] / .6 * 100)}%</b> <span class="muted">(دايماً تحت صوت أحمد)</span></label><input type="range" id="iVol" min="5" max="100" value="${Math.round(f[2] / .6 * 100)}" style="width:100%">
+      <label>التوقيت: <b dir="ltr">${f[1].toFixed(2)}s</b></label><div class="row"><button class="sm" id="iL" type="button">−0.05</button><button class="sm" id="iR" type="button">+0.05</button><button class="sm" id="iPl" type="button">▶ اسمعه</button><button class="sm red" id="iDel" type="button">🗑 مسح</button></div>`;
+    $('iType').onchange = e => { snap(); f[0] = e.target.value; changed(); };
+    let first = true; $('iVol').oninput = e => { if (first) { snap(); first = false; } f[2] = Math.round(+e.target.value / 100 * .6 * 1000) / 1000; $('iVolL').textContent = e.target.value + '%'; changed(false); };
+    $('iDel').onclick = delFx;
+  }
+  $('iL').onclick = () => nudge(-.05); $('iR').onclick = () => nudge(.05);
+  $('iPl').onclick = () => { const arr = SEL.type === 'w' ? EDF.ed.words : EDF.ed.sfx; seek(Math.max(0, arr[SEL.i][1] - .6)); setTimeout(() => { const v = vo(); if (v && v.paused) pvWin.play(); }, 350); };
+}
+$('addFx').onclick = () => { if (!EDF) return; const v = vo(); snap(); EDF.ed.sfx.push(['pop', Math.round((v ? v.currentTime : 0) * 1000) / 1000, .25]); SEL = {type: 'fx', i: EDF.ed.sfx.length - 1}; changed(); showInsp(); };
+
+/* ---- colours (from the file's own palette) ---- */
+function buildCols(){
+  let P = []; try { P = pvWin.eval('typeof PALETTE !== "undefined" ? PALETTE : []'); } catch (e) {}
+  const box = $('cols'); $('colBox').hidden = !P.length; box.innerHTML = '';
+  P.forEach(p => {
+    const row = document.createElement('div'); row.className = 'sw';
+    const cur = (EDF.colors[p.v] || pvWin.getComputedStyle(pvWin.document.getElementById('reel')).getPropertyValue(p.v).trim() || p.opts[0]).toUpperCase();
+    row.innerHTML = `<span class="lb">${esc(p.label)}</span>` + p.opts.map(o => `<button type="button" style="background:${o}" data-c="${o}" class="${o.toUpperCase() === cur ? 'on' : ''}" aria-label="${o}"></button>`).join('') + `<input type="color" value="${cur.length === 7 ? cur : '#ffffff'}" aria-label="لون مخصص">`;
+    const set = c => { EDF.colors[p.v] = c.toUpperCase(); try { pvWin.applyCol ? pvWin.applyCol(p.v, c) : pvWin.document.getElementById('reel').style.setProperty(p.v, c); } catch (e) {} const v = vo(); if (v && v.paused) pvWin.render(v.currentTime); row.querySelectorAll('button').forEach(x => x.classList.toggle('on', x.dataset.c.toUpperCase() === c.toUpperCase())); };
+    row.querySelectorAll('button').forEach(x => x.onclick = () => set(x.dataset.c));
+    row.querySelector('input').oninput = e => set(e.target.value);
+    box.appendChild(row);
+  });
+}
+
+/* ---- export ---- */
+function bakeHtml(){
+  let h = EDF.html.replace(EDRE, (m, a, b, c) => a + JSON.stringify(EDF.ed).replace(/</g, '\\u003c') + c);
+  const cols = Object.entries(EDF.colors);
+  if (cols.length) { const css = '<style id="baked">:root{' + cols.map(([k, v]) => `${k}:${v}`).join(';') + '}</style>'; h = /<style id="baked">[\s\S]*?<\/style>/.test(h) ? h.replace(/<style id="baked">[\s\S]*?<\/style>/, css) : h.replace('</head>', css + '</head>'); }
+  return h;
+}
+$('saveHtml').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([bakeHtml()], {type: 'text/html'})); a.download = EDF.name.replace(/\.html?$/i, '') + '_edited.html'; document.body.appendChild(a); a.click(); a.remove(); msg('edMsg', '✓ الملف المعدّل نزل على جهازك.', 'ok'); };
+$('exportBtn').onclick = async () => {
+  if (!TOKEN) { msg('edMsg', 'اعمل الإعداد (خطوة 0) الأول علشان التصدير.', 'bad'); $('setup').scrollIntoView({behavior: 'smooth'}); return; }
+  if (pvWin && pvWin.pause) pvWin.pause();
+  msg('edMsg', 'بيرفع النسخة المعدّلة للريندر…');
+  await upload([new File([bakeHtml()], EDF.name.replace(/\.html?$/i, '') + '_edit.html', {type: 'text/html'})]);
+  msg('edMsg', '✓ اتبعت للريندر. هتلاقي الفيديو في «الفيديوهات الجاهزة» لما يخلص.', 'ok');
+};
 
 const fmtMin = s => s < 60 ? `${Math.round(s)} ث` : `${Math.floor(s / 60)} د ${Math.round(s % 60)} ث`;
 async function refresh(){

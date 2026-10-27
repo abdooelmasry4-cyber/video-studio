@@ -20,7 +20,7 @@ for (const file of files) {
   const html = fs.readFileSync(file, 'utf8');
   // 1) voice track: pulled from the embedded data URI
   const m = html.match(/<audio[^>]*src="data:audio\/[a-z0-9]+;base64,([^"]+)"/i);
-  const audioPath = path.join(outDir, `${name}.voice.mp3`);
+  let audioPath = path.join(outDir, `${name}.voice.mp3`);
   if (m) fs.writeFileSync(audioPath, Buffer.from(m[1], 'base64'));
   // 2) page at full resolution, controls hidden, animations under manual clock
   const page = await browser.newPage({viewport: {width: 1080, height: 1920}, deviceScaleFactor: 1});
@@ -30,6 +30,12 @@ for (const file of files) {
     html,body{margin:0!important;padding:0!important;background:#000!important;display:block!important;min-height:0!important;overflow:hidden!important}
     body>*:not(#reel){display:none!important}
     #reel{width:1080px!important;height:1920px!important;max-width:none!important;border-radius:0!important;box-shadow:none!important;position:fixed!important;left:0;top:0}`});
+  // editable files mix voice + SFX inside the page (same mix as the editor preview)
+  let hasAudio = !!m;
+  if (await page.evaluate(() => typeof window.__mixAudio === 'function')) {
+    const wav = await page.evaluate(() => window.__mixAudio());
+    audioPath = path.join(outDir, `${name}.mix.wav`); fs.writeFileSync(audioPath, Buffer.from(wav, 'base64')); hasAudio = true;
+  }
   const dur = await page.evaluate(() => (typeof DUR !== 'undefined' ? DUR : 40));
   await page.evaluate(() => {
     const vo = document.getElementById('vo'); if (vo) { vo.muted = true; vo.pause(); }
@@ -46,7 +52,7 @@ for (const file of files) {
   const out = path.join(outDir, `${name}.mp4`);
   const FF = process.env.FFMPEG_PATH || 'ffmpeg';
   // pass 1: picture only (muxing audio against a slow frame pipe made ffmpeg drop the last seconds of sound)
-  const vidOnly = m ? path.join(outDir, `${name}.video.mp4`) : out;
+  const vidOnly = hasAudio ? path.join(outDir, `${name}.video.mp4`) : out;
   const ff = spawn(FF, ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-i', '-',
     '-c:v', 'libx264', '-preset', 'slow', '-crf', '16', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', vidOnly], {stdio: ['pipe', 'inherit', 'inherit']});
   let ffDone = false; ff.on('close', () => { ffDone = true; });
@@ -63,7 +69,7 @@ for (const file of files) {
   if (!ffDone) await new Promise((r) => ff.on('close', r));
   if (!fs.existsSync(vidOnly) || fs.statSync(vidOnly).size < 1000) throw new Error('ffmpeg produced no video for ' + name);
   // pass 2: add the full voice track, padded/trimmed to the exact picture length
-  if (m) {
+  if (hasAudio) {
     const vlen = frames / FPS;
     await new Promise((res, rej) => { const p2 = spawn(FF, ['-y', '-loglevel', 'error', '-i', vidOnly, '-i', audioPath, '-map', '0:v:0', '-map', '1:a:0',
       '-c:v', 'copy', '-af', 'apad', '-t', vlen.toFixed(3), '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', out], {stdio: 'inherit'});
