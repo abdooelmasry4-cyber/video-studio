@@ -24,7 +24,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release view videos >/dev/null 2>&1 || gh release create videos --title "Videos" --notes "Rendered videos"
-          gh release upload videos output/*.mp4 --clobber
+          gh release upload videos output/*.mp4 $(ls output/*.jpg 2>/dev/null) --clobber
       - name: Clean rendered inputs
         if: hashFiles('input/*.html') != ''
         run: |

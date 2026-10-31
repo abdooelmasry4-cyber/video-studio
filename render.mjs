@@ -22,6 +22,10 @@ for (const file of files) {
   const m = html.match(/<audio[^>]*src="data:audio\/[a-z0-9]+;base64,([^"]+)"/i);
   let audioPath = path.join(outDir, `${name}.voice.mp3`);
   if (m) fs.writeFileSync(audioPath, Buffer.from(m[1], 'base64'));
+  // optional cover image embedded in the file: <script type="text/plain" id="thumb-b64">…jpeg base64…</script>
+  const tm = html.match(/<script[^>]*id="thumb-b64"[^>]*>([^<]+)<\/script>/i);
+  const thumbPath = path.join(outDir, `${name}.jpg`);
+  if (tm) fs.writeFileSync(thumbPath, Buffer.from(tm[1].trim(), 'base64'));
   // 2) page at full resolution, controls hidden, animations under manual clock
   const page = await browser.newPage({viewport: {width: 1080, height: 1920}, deviceScaleFactor: 1});
   await page.goto('file://' + path.resolve(file), {waitUntil: 'networkidle'});
@@ -71,8 +75,12 @@ for (const file of files) {
   // pass 2: add the full voice track, padded/trimmed to the exact picture length
   if (hasAudio) {
     const vlen = frames / FPS;
-    await new Promise((res, rej) => { const p2 = spawn(FF, ['-y', '-loglevel', 'error', '-i', vidOnly, '-i', audioPath, '-map', '0:v:0', '-map', '1:a:0',
-      '-c:v', 'copy', '-af', 'apad', '-t', vlen.toFixed(3), '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', out], {stdio: 'inherit'});
+    await new Promise((res, rej) => { const args2 = ['-y', '-loglevel', 'error', '-i', vidOnly, '-i', audioPath];
+      if (tm) args2.push('-i', thumbPath);
+      args2.push('-map', '0:v:0', '-map', '1:a:0');
+      if (tm) args2.push('-map', '2:v:0', '-c:v:1', 'copy', '-disposition:v:1', 'attached_pic');
+      args2.push('-c:v:0', 'copy', '-af', 'apad', '-t', vlen.toFixed(3), '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', out);
+      const p2 = spawn(FF, args2, {stdio: 'inherit'});
       p2.on('close', (c) => c === 0 ? res() : rej(new Error('audio mux failed for ' + name))); });
     fs.unlinkSync(vidOnly); fs.unlinkSync(audioPath);
   }
