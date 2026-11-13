@@ -58,13 +58,13 @@ for (const file of files) {
   // pass 1: picture only (muxing audio against a slow frame pipe made ffmpeg drop the last seconds of sound)
   const vidOnly = hasAudio ? path.join(outDir, `${name}.video.mp4`) : out;
   const ff = spawn(FF, ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-i', '-',
-    '-c:v', 'libx264', '-preset', 'slow', '-crf', '16', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', vidOnly], {stdio: ['pipe', 'inherit', 'inherit']});
+    '-c:v', 'libx264', '-preset', 'slow', '-crf', '14', '-profile:v', 'high', '-pix_fmt', 'yuv420p', '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-movflags', '+faststart', vidOnly], {stdio: ['pipe', 'inherit', 'inherit']});
   let ffDone = false; ff.on('close', () => { ffDone = true; });
   ff.stdin.on('error', () => {}); // ffmpeg may finish a hair early; never crash on that
   const reel = page.locator('#reel');
   for (let f = 0; f < frames && !ffDone; f++) {
     await page.evaluate(async ([t, dt]) => { window.__step(t, dt); if (window.__settle) await window.__settle(); }, [f / FPS, 1000 / FPS]);
-    const buf = await reel.screenshot({type: 'jpeg', quality: 95});
+    const buf = await reel.screenshot({type: 'png'}); // lossless frames: sharper text and edges
     if (ffDone) break;
     if (!ff.stdin.write(buf)) await new Promise((r) => { const done = () => { ff.stdin.off('drain', done); ff.off('close', done); r(); }; ff.stdin.once('drain', done); ff.once('close', done); });
     if (f % FPS === 0) process.stdout.write(`\r${name}: ${Math.round((f / frames) * 100)}%`);
