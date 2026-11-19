@@ -60,15 +60,15 @@ jobs:
         env: {GH_TOKEN: '${{ github.token }}', S: '${{ job.status }}', F: '${{ matrix.file }}'}
         run: |
           [ -n "$COMMENT" ] && gh api -X PATCH repos/$GITHUB_REPOSITORY/issues/comments/$COMMENT -f body="{\"name\":\"${F%.html}\",\"p\":100,\"state\":\"$S\",\"end\":$(date +%s)}" >/dev/null || true
-      - name: WhatsApp message
+      - name: Telegram / WhatsApp message
         if: always()
-        env: {WA_PHONE: '${{ secrets.WA_PHONE }}', WA_KEY: '${{ secrets.WA_KEY }}', S: '${{ job.status }}', F: '${{ matrix.file }}'}
+        env: {TG_TOKEN: '${{ secrets.TG_TOKEN }}', TG_CHAT: '${{ secrets.TG_CHAT }}', WA_PHONE: '${{ secrets.WA_PHONE }}', WA_KEY: '${{ secrets.WA_KEY }}', S: '${{ job.status }}', F: '${{ matrix.file }}'}
         run: |
-          [ -z "$WA_KEY" ] && exit 0
           if [ "$S" = success ]; then T="✅ الفيديو جاهز: ${F%.html}"; else T="❌ الريندر وقف: ${F%.html}"; fi
           T="$T
           https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}/"
-          curl -sG "https://api.callmebot.com/whatsapp.php" --data-urlencode "phone=$WA_PHONE" --data-urlencode "text=$T" --data-urlencode "apikey=$WA_KEY" >/dev/null || true
+          [ -n "$TG_TOKEN" ] && curl -s "https://api.telegram.org/bot$TG_TOKEN/sendMessage" --data-urlencode "chat_id=$TG_CHAT" --data-urlencode "text=$T" >/dev/null || true
+          [ -n "$WA_KEY" ] && curl -sG "https://api.callmebot.com/whatsapp.php" --data-urlencode "phone=$WA_PHONE" --data-urlencode "text=$T" --data-urlencode "apikey=$WA_KEY" >/dev/null || true
 
   clean:
     needs: [plan, render]
