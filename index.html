@@ -36,7 +36,20 @@ input[type=password],input[type=text]{width:100%;font:inherit;border:1px solid v
 @keyframes s{to{transform:rotate(360deg)}}
 .vids{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
 .vid{border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
-.vid video{width:100%;aspect-ratio:9/16;background:#000;display:block}
+.vid .po{position:relative;width:100%;aspect-ratio:9/16;background:#111 center/cover no-repeat;cursor:pointer;border:0;padding:0;display:block}
+.vid .po.wide{aspect-ratio:16/9}.vid .po.sq{aspect-ratio:1}
+.vid .po::after{content:'▶';position:absolute;inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;font-size:22px;display:grid;place-items:center;padding-inline-start:4px;box-sizing:border-box}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.86);display:none;align-items:center;justify-content:center;z-index:99;padding:16px}
+.modal.on{display:flex}.modal video{max-width:100%;max-height:88vh;border-radius:14px;background:#000}
+.modal .x{position:absolute;top:14px;left:14px;width:44px;height:44px;border-radius:50%;border:0;background:#fff;font-size:20px;cursor:pointer}
+.jobs{display:flex;flex-direction:column;gap:10px}
+.job{padding:12px 14px;border-radius:14px;background:var(--soft)}
+.job .top{display:flex;justify-content:space-between;gap:10px;font:700 13px 'Alexandria'}
+.job .nm{direction:ltr;word-break:break-all}
+.bar{height:10px;border-radius:99px;background:#e4e3de;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:var(--acc);border-radius:99px;transition:width .6s}
+.job.done .bar i{background:var(--ok)}.job.fail .bar i{background:var(--bad)}
+.opts{margin-top:12px;font-size:14px}.opts select,.opts input[type=number]{font:inherit;border:1px solid var(--line);border-radius:10px;padding:6px 10px}
+
 .vid .meta{padding:10px 12px;display:flex;flex-direction:column;gap:6px}
 .vid .n{font:700 13px 'Alexandria';word-break:break-all;direction:ltr;text-align:right}
 .vid .acts{display:flex;gap:8px}
@@ -109,7 +122,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding:30px 0 40px}
         <ol>
           <li>افتح <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">صفحة إنشاء مفتاح جديد على جيتهاب</a>.</li>
           <li>اكتب أي اسم، ومن <b>Repository access</b> اختار <b>Only select repositories</b> ← اختار ريبو الاستوديو ده.</li>
-          <li>من <b>Permissions</b>: خلي <b>Contents</b> = Read and write، و<b>Actions</b> = Read-only.</li>
+          <li>من <b>Permissions</b>: خلي <b>Contents</b> = Read and write، و<b>Actions</b> = Read-only، و<b>Issues</b> = Read-only (علشان نسبة التقدم).</li>
           <li>اضغط <b>Generate token</b> وانسخه والزقه هنا.</li>
         </ol>
         <p class="muted">المفتاح بيتحفظ على المتصفح بتاعك بس، ومحدش غيرك يقدر يشوفه.</p>
@@ -126,6 +139,14 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding:30px 0 40px}
       <b>اسحب ملف الـHTML هنا</b><br><span class="muted">أو اضغط تختاره من جهازك. لو الملف قابل للتعديل هيفتحلك المحرر، ولو قديم هيروح للريندر على طول.</span>
       <input type="file" id="file" accept=".html,text/html" hidden multiple>
     </label>
+    <details class="opts"><summary>لو الملف أي كود HTML تاني (مش من أكوادنا)</summary>
+      <div class="row" style="margin-top:10px">
+        <label>المقاس <select id="oSize"><option value="1080x1920">طولي 9:16</option><option value="1920x1080">عرضي 16:9</option><option value="1080x1080">مربع 1:1</option></select></label>
+        <label>المدة بالثواني <input type="number" id="oDur" min="1" max="600" step="0.5" placeholder="تلقائي" style="width:110px"></label>
+        <label>صوت (اختياري) <input type="file" id="oAud" accept="audio/*"></label>
+      </div>
+      <p class="muted" style="margin:6px 0 0">أكوادنا بتتعرف لوحدها. الإعدادات دي بس للأكواد التانية، ولو سبت المدة فاضية هيحسبها لوحده.</p>
+    </details>
     <div class="msg" id="upMsg"></div>
   </section>
 
@@ -164,6 +185,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding:30px 0 40px}
   <section class="card">
     <h2><span class="num">3</span> حالة الريندر</h2>
     <div class="status" id="status"><span class="pill idle">مستني</span><span class="muted">مفيش ريندر شغال دلوقتي.</span></div>
+    <div class="jobs" id="jobs" style="margin-top:12px"></div>
   </section>
 
   <section class="card">
@@ -171,6 +193,15 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding:30px 0 40px}
     <div class="vids" id="vids"><p class="muted">لسه مفيش فيديوهات.</p></div>
   </section>
 </main>
+<section class="wrap"><details class="card"><summary style="font:700 16px 'Alexandria';cursor:pointer">📲 رسالة واتساب لما الفيديو يخلص</summary>
+  <ol>
+    <li>سجّل رقم <b dir="ltr">+34 644 66 32 62</b> عندك باسم CallMeBot، وابعتله على واتساب الرسالة دي بالظبط: <b dir="ltr">I allow callmebot to send me messages</b></li>
+    <li>هيردّ عليك برسالة فيها <b>apikey</b> (رقم).</li>
+    <li>افتح <a id="secLink" target="_blank" rel="noopener">إعدادات الأسرار في الريبو</a> واضغط <b>New repository secret</b> مرتين:<br><b dir="ltr">WA_PHONE</b> = رقمك بالكود الدولي (مثلاً <span dir="ltr">+2010…</span>)<br><b dir="ltr">WA_KEY</b> = الرقم اللي جالك.</li>
+  </ol>
+  <p class="muted">المفاتيح دي بتتحفظ في جيتهاب بس، ما تبعتهاش لحد.</p>
+</details></section>
+<div class="modal" id="modal"><button class="x" id="mx" type="button" aria-label="قفل">✕</button><video id="mv" controls playsinline preload="auto"></video></div>
 <footer>Abdo Elmasry × Ahmed Ben Ali — Motion Studio</footer>
 
 <script>
@@ -199,20 +230,30 @@ $('saveTok').onclick = async () => {
 $('logout').onclick = () => { LS.set('vs_token', null); TOKEN = null; showSetup(); };
 
 const slug = s => (s.replace(/\.html?$/i, '').replace(/[^A-Za-z0-9_-]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 40) || 'video');
+const b64buf = async (f) => { const buf = new Uint8Array(await f.arrayBuffer()); let bin = ''; for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000)); return btoa(bin); };
 async function upload(files){
   if (!TOKEN) return msg('upMsg', 'اعمل الإعداد (خطوة 0) الأول.', 'bad');
-  for (const f of files) {
-    if (!/\.html?$/i.test(f.name)) { msg('upMsg', `«${f.name}» مش ملف HTML.`, 'bad'); continue; }
-    msg('upMsg', `بيرفع ${f.name}…`);
-    const stamp = new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '');
-    const name = `${slug(f.name)}_${stamp}.html`;
-    const buf = new Uint8Array(await f.arrayBuffer()); let bin = ''; for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000));
-    try {
-      await api('/contents/input/' + encodeURIComponent(name), {method: 'PUT', body: JSON.stringify({message: 'Render ' + name, content: btoa(bin)})});
-      msg('upMsg', `✓ اترفع. الريندر هيبدأ خلال ثواني، تابعه في خطوة 2.`, 'ok');
-    } catch (e) { msg('upMsg', 'الرفع ما تمّش: ' + e.message, 'bad'); }
-  }
-  setTimeout(refresh, 4000);
+  files = files.filter(f => /\.html?$/i.test(f.name)); if (!files.length) return;
+  const stamp = new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '');
+  const aud = $('oAud').files[0], [w, h] = $('oSize').value.split('x').map(Number), dur = +$('oDur').value || 0;
+  try {
+    msg('upMsg', `بيرفع ${files.length} ملف…`);
+    const ref = await api('/git/ref/heads/main'), base = await api('/git/commits/' + ref.object.sha);
+    const tree = [], blob = async (p, content) => { const b = await api('/git/blobs', {method: 'POST', body: JSON.stringify({content, encoding: 'base64'})}); tree.push({path: p, mode: '100644', type: 'blob', sha: b.sha}); };
+    for (const f of files) {
+      const name = `${slug(f.name)}_${stamp}`, html = await f.text();
+      const ours = /id="reel"/.test(html) && /function\s+render\s*\(/.test(html);
+      if (!ours) { const side = {w, h}; if (dur) side.dur = dur;
+        if (aud) { const ext = (aud.name.split('.').pop() || 'mp3').toLowerCase(); side.audio = `${name}.${ext}`; await blob(`input/${side.audio}`, await b64buf(aud)); }
+        await blob(`input/${name}.json`, btoa(JSON.stringify(side))); }
+      await blob(`input/${name}.html`, await b64buf(f));
+    }
+    const t = await api('/git/trees', {method: 'POST', body: JSON.stringify({base_tree: base.tree.sha, tree})});
+    const c = await api('/git/commits', {method: 'POST', body: JSON.stringify({message: 'Render ' + files.map(f => f.name).join(', '), tree: t.sha, parents: [ref.object.sha]})});
+    await api('/git/refs/heads/main', {method: 'PATCH', body: JSON.stringify({sha: c.sha})});
+    msg('upMsg', `✓ اترفع ${files.length > 1 ? files.length + ' ملفات، وهيترندروا مع بعض في نفس الوقت' : ''}. تابع التقدم في خطوة 3.`, 'ok');
+  } catch (e) { msg('upMsg', 'الرفع ما تمّش: ' + e.message, 'bad'); }
+  setTimeout(refresh, 5000);
 }
 const drop = $('drop'), fi = $('file');
 drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('over'); });
@@ -232,13 +273,16 @@ const clone = o => JSON.parse(JSON.stringify(o));
 const esc = s => s.replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 
 async function route(files){
+  const batch = [];
   for (const f of files) {
     if (!/\.html?$/i.test(f.name)) { msg('upMsg', `«${f.name}» مش ملف HTML.`, 'bad'); continue; }
     const html = await f.text(); const m = html.match(EDRE);
-    if (m) { openEditor(f.name, html, JSON.parse(m[2])); msg('upMsg', '✓ الملف اتفتح في المحرر تحت.', 'ok'); return; }
-    upload([f]);
+    if (m && files.length === 1) { openEditor(f.name, html, JSON.parse(m[2])); msg('upMsg', '✓ الملف اتفتح في المحرر تحت.', 'ok'); return; }
+    batch.push(f);
   }
-}
+  if (batch.length) upload(batch);
+};
+
 function openEditor(name, html, ed){
   EDF = {name, html, ed, colors: {}}; SEL = null; UNDO = [];
   $('editor').hidden = false; $('edName').textContent = name; $('pvLd').hidden = false; msg('edMsg', '');
@@ -390,34 +434,57 @@ $('exportBtn').onclick = async () => {
 };
 
 const fmtMin = s => s < 60 ? `${Math.round(s)} ث` : `${Math.floor(s / 60)} د ${Math.round(s % 60)} ث`;
+let ISSUE = null, LAST = '';
 async function refresh(){
   if (!TOKEN) return;
+  const st = $('status'), jobs = $('jobs');
   try {
-    const runs = await api('/actions/workflows/render.yml/runs?per_page=1');
-    const r = runs.workflow_runs && runs.workflow_runs[0];
-    const st = $('status');
-    if (!r) st.innerHTML = '<span class="pill idle">مستني</span><span class="muted">لسه مفيش ريندر.</span>';
-    else if (r.status !== 'completed') st.innerHTML = `<div class="spin"></div><span class="pill run">بيترندر</span><span class="muted">بقاله ${fmtMin((Date.now() - new Date(r.run_started_at || r.created_at)) / 1000)} · الفيديو 40 ثانية بياخد حوالي 5 دقايق</span>`;
+    const runs = await api('/actions/workflows/render.yml/runs?per_page=5');
+    const active = (runs.workflow_runs || []).filter(r => r.status !== 'completed');
+    const r = (runs.workflow_runs || [])[0];
+    if (active.length) st.innerHTML = `<div class="spin"></div><span class="pill run">بيترندر</span><span class="muted">${active.length > 1 ? active.length + ' طلبات في الطابور' : 'شغال دلوقتي'}</span>`;
+    else if (!r) st.innerHTML = '<span class="pill idle">مستني</span><span class="muted">لسه مفيش ريندر.</span>';
     else if (r.conclusion === 'success') st.innerHTML = `<span class="pill ok">خلص ✓</span><span class="muted">آخر ريندر خلص ${new Date(r.updated_at).toLocaleString('ar-EG')}</span>`;
     else st.innerHTML = `<span class="pill bad">حصل خطأ</span><a class="muted" href="${r.html_url}" target="_blank" rel="noopener">افتح التفاصيل على جيتهاب</a>`;
-  } catch (e) { $('status').innerHTML = `<span class="pill bad">مش متوصل</span><span class="muted">${e.message}</span>`; }
+    // per-file progress, written live by the render jobs into the "render-status" issue
+    const ids = new Set(active.map(x => x.id).concat(r ? [r.id] : []));
+    if (!ISSUE) { const is = await api('/issues?state=open&per_page=30').catch(() => []); const f = (is || []).find(i => i.title === 'render-status'); ISSUE = f ? f.number : null; }
+    if (ISSUE) {
+      const cs = await api(`/issues/${ISSUE}/comments?per_page=100`).catch(() => []);
+      const list = (cs || []).map(c => { try { return JSON.parse(c.body); } catch (e) { return null; } }).filter(j => j && ids.has(j.run));
+      jobs.innerHTML = list.map(j => { const now = Date.now() / 1000, el = (j.end || now) - j.start, p = Math.max(0, Math.min(100, j.p || 0));
+        const eta = p > 3 && !j.state ? ` · فاضل حوالي ${fmtMin(el * (100 - p) / p)}` : '';
+        const cls = j.state ? (j.state === 'success' ? 'done' : 'fail') : '';
+        const lbl = j.state ? (j.state === 'success' ? 'جاهز ✓' : 'وقف ✕') : p + '%';
+        return `<div class="job ${cls}"><div class="top"><span class="nm">${esc(j.name)}</span><span>${lbl}</span></div><div class="bar"><i style="width:${j.state ? 100 : p}%"></i></div><div class="muted" style="font-size:13px;margin-top:4px">بقاله ${fmtMin(el)}${eta}</div></div>`; }).join('');
+    }
+  } catch (e) { st.innerHTML = `<span class="pill bad">مش متوصل</span><span class="muted">${e.message}</span>`; }
   try {
     const rel = await api('/releases/tags/videos');
-    const assets = (rel.assets || []).filter(a => a.name.endsWith('.mp4')).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    const all = rel.assets || [], by = n => all.find(a => a.name === n);
+    const assets = all.filter(a => a.name.endsWith('.mp4') && !a.name.endsWith('.preview.mp4')).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    const sig = assets.map(a => a.id + ':' + a.updated_at).join(',') + all.length; if (sig === LAST) return; LAST = sig;
     $('vids').innerHTML = assets.length ? '' : '<p class="muted">لسه مفيش فيديوهات.</p>';
     assets.forEach(a => {
+      const base = a.name.slice(0, -4), pv = by(base + '.preview.mp4'), jpg = by(base + '.jpg');
       const d = document.createElement('div'); d.className = 'vid';
-      d.innerHTML = `<video controls preload="metadata" src="${a.browser_download_url}"></video><div class="meta"><span class="n"></span><span class="muted">${(a.size / 1048576).toFixed(1)} MB · ${new Date(a.created_at).toLocaleDateString('ar-EG')}</span><div class="acts"><a href="${a.browser_download_url}" download>⬇ تحميل</a><button type="button">مسح</button></div></div>`;
-      d.querySelector('.n').textContent = a.name;
-      const del = d.querySelector('button');
+      d.innerHTML = `<button class="po" type="button" aria-label="شغّل"></button><div class="meta"><span class="n"></span><span class="muted">${(a.size / 1048576).toFixed(1)} MB · ${new Date(a.created_at).toLocaleDateString('ar-EG')}</span><div class="acts"><a href="${a.browser_download_url}" download>⬇ تحميل</a><button type="button">مسح</button></div></div>`;
+      d.querySelector('.n').textContent = base;
+      const po = d.querySelector('.po'); if (jpg) po.style.backgroundImage = `url("${jpg.browser_download_url}")`;
+      po.onclick = () => { const v = $('mv'); v.src = (pv || a).browser_download_url; $('modal').classList.add('on'); v.play().catch(() => {}); };
+      const del = d.querySelector('.acts button');
       del.onclick = async () => { if (del.dataset.s !== '1') { del.dataset.s = '1'; del.textContent = 'متأكد؟'; setTimeout(() => { del.dataset.s = ''; del.textContent = 'مسح'; }, 3000); return; }
-        try { await api('/releases/assets/' + a.id, {method: 'DELETE'}); refresh(); } catch (e) { del.textContent = 'ما اتمسحش'; } };
+        try { for (const x of [a, pv, jpg].filter(Boolean)) await api('/releases/assets/' + x.id, {method: 'DELETE'}); LAST = ''; refresh(); } catch (e) { del.textContent = 'ما اتمسحش'; } };
       $('vids').appendChild(d);
     });
   } catch (e) { if (e.status !== 404) $('vids').innerHTML = `<p class="muted">مش قادر أجيب الفيديوهات: ${e.message}</p>`; }
 }
+const closeM = () => { const v = $('mv'); v.pause(); v.removeAttribute('src'); v.load(); $('modal').classList.remove('on'); };
+$('mx').onclick = closeM; $('modal').onclick = e => { if (e.target.id === 'modal') closeM(); };
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeM(); });
+$('secLink').href = 'https://github.com/' + REPO + '/settings/secrets/actions/new';
 $('repo').value = REPO;
-showSetup(); refresh(); setInterval(refresh, 15000);
+showSetup(); refresh(); setInterval(refresh, 10000);
 </script>
 </body>
 </html>

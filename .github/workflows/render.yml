@@ -5,31 +5,81 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+  issues: write
+concurrency:
+  group: render
+  cancel-in-progress: false
 jobs:
-  render:
+  plan:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    outputs:
+      files: ${{ steps.ls.outputs.files }}
     steps:
       - uses: actions/checkout@v4
+        with: {ref: main}
+      - id: ls
+        run: echo "files=$(ls input/*.html 2>/dev/null | xargs -n1 basename 2>/dev/null | jq -R . | jq -cs .)" >> "$GITHUB_OUTPUT"
+
+  render:
+    needs: plan
+    if: needs.plan.outputs.files != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        file: ${{ fromJson(needs.plan.outputs.files) }}
+    name: ${{ matrix.file }}
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main}
       - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm install
-      - name: Get ffmpeg (npm static build, no apt)
-        run: npm install --no-save ffmpeg-static@5.2.0
-      - run: CHROME_PATH=$(which google-chrome || which google-chrome-stable || which chromium) FFMPEG_PATH=$(node -e "console.log(require('ffmpeg-static'))") node render.mjs input output 30
-      - name: Publish videos
-        if: hashFiles('output/*.mp4') != ''
-        env:
-          GH_TOKEN: ${{ github.token }}
+        with: {node-version: 20}
+      - run: npm install && npm install --no-save ffmpeg-static@5.2.0
+      - name: Live progress (studio page reads this)
+        env: {GH_TOKEN: '${{ github.token }}', F: '${{ matrix.file }}'}
+        run: |
+          N=$(gh issue list --state open --search "render-status in:title" --json number -q '.[0].number')
+          [ -z "$N" ] && N=$(gh issue create --title render-status --body "Live render progress for the studio page. Do not close." | grep -oE '[0-9]+$')
+          ST=$(date +%s)
+          C=$(gh api repos/$GITHUB_REPOSITORY/issues/$N/comments -f body="{\"name\":\"${F%.html}\",\"p\":0,\"run\":$GITHUB_RUN_ID,\"start\":$ST}" -q .id)
+          echo "COMMENT=$C" >> "$GITHUB_ENV"
+          nohup bash -c "while true; do sleep 12; [ -f /tmp/prog.json ] && gh api -X PATCH repos/$GITHUB_REPOSITORY/issues/comments/$C -f body=\"\$(jq -c '. + {run: $GITHUB_RUN_ID, start: $ST}' /tmp/prog.json)\" >/dev/null 2>&1; done" >/dev/null 2>&1 &
+      - name: Render
+        run: |
+          CHROME_PATH=$(which google-chrome || which google-chrome-stable || which chromium) \
+          FFMPEG_PATH=$(node -e "console.log(require('ffmpeg-static'))") \
+          PROGRESS_FILE=/tmp/prog.json WORKERS=4 node render.mjs "input/${{ matrix.file }}" output 30
+      - name: Publish
+        env: {GH_TOKEN: '${{ github.token }}'}
         run: |
           gh release view videos >/dev/null 2>&1 || gh release create videos --title "Videos" --notes "Rendered videos"
-          gh release upload videos output/*.mp4 $(ls output/*.jpg 2>/dev/null) --clobber
-      - name: Clean rendered inputs
-        if: hashFiles('input/*.html') != ''
+          gh release upload videos output/*.mp4 output/*.jpg --clobber
+      - name: Close progress
+        if: always()
+        env: {GH_TOKEN: '${{ github.token }}', S: '${{ job.status }}', F: '${{ matrix.file }}'}
         run: |
-          git config user.name "render-bot"
-          git config user.email "render-bot@users.noreply.github.com"
-          git rm -q input/*.html
-          git commit -m "Clean rendered inputs"
-          git push
+          [ -n "$COMMENT" ] && gh api -X PATCH repos/$GITHUB_REPOSITORY/issues/comments/$COMMENT -f body="{\"name\":\"${F%.html}\",\"p\":100,\"state\":\"$S\",\"end\":$(date +%s)}" >/dev/null || true
+      - name: WhatsApp message
+        if: always()
+        env: {WA_PHONE: '${{ secrets.WA_PHONE }}', WA_KEY: '${{ secrets.WA_KEY }}', S: '${{ job.status }}', F: '${{ matrix.file }}'}
+        run: |
+          [ -z "$WA_KEY" ] && exit 0
+          if [ "$S" = success ]; then T="✅ الفيديو جاهز: ${F%.html}"; else T="❌ الريندر وقف: ${F%.html}"; fi
+          T="$T
+          https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}/"
+          curl -sG "https://api.callmebot.com/whatsapp.php" --data-urlencode "phone=$WA_PHONE" --data-urlencode "text=$T" --data-urlencode "apikey=$WA_KEY" >/dev/null || true
+
+  clean:
+    needs: [plan, render]
+    if: always() && needs.plan.outputs.files != '[]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main}
+      - name: Remove rendered inputs
+        env: {FILES: '${{ needs.plan.outputs.files }}'}
+        run: |
+          git config user.name "render-bot"; git config user.email "render-bot@users.noreply.github.com"
+          for f in $(echo "$FILES" | jq -r '.[]'); do b="${f%.html}"; git rm -q --ignore-unmatch "input/$f" "input/$b.json" "input/$b.mp3" "input/$b.wav" "input/$b.m4a"; done
+          git diff --cached --quiet || { git commit -qm "Clean rendered inputs"; git pull -q --rebase && git push -q; }
