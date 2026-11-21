@@ -1,4 +1,4 @@
-// Motion Studio renderer v2 — any HTML page → MP4 (frame by frame, no dropped frames).
+// Motion Studio renderer v3 (montage layer aware) — any HTML page → MP4 (frame by frame, no dropped frames).
 // • fast: the video is split into parts rendered side by side (WORKERS pages + encoders), then joined losslessly
 // • any code: pages without our render(t) run on a virtual clock (rAF, timers, CSS/WAAPI animations, GSAP, canvas, <video>)
 // • light preview copy for smooth playback in the studio library
@@ -54,6 +54,7 @@ async function openPage(browser, file, W, H, ours) {
   await page.addInitScript(CLOCK);
   await page.goto('file://' + path.resolve(file), {waitUntil: 'load'});
   await page.evaluate(() => document.fonts.ready);
+  await page.evaluate(() => window.__postReady || null);
   if (ours) await page.addStyleTag({content: `
     html,body{margin:0!important;padding:0!important;background:#000!important;display:block!important;min-height:0!important;overflow:hidden!important}
     body>*:not(#reel){display:none!important}
@@ -62,7 +63,7 @@ async function openPage(browser, file, W, H, ours) {
     const vo = document.getElementById('vo'); if (vo) { vo.muted = true; vo.pause(); }
     if (!ours) { window.__virt(); document.querySelectorAll('video,audio').forEach((m) => { m.muted = true; m.pause(); }); }
     window.__step = async (t, dt) => {
-      if (ours) render(t);
+      if (ours) { if (window.__post) await window.__post.render(t); else render(t); }
       else { window.__advance(t * 1000);
         await Promise.all([...document.querySelectorAll('video')].map((v) => { if (Math.abs(v.currentTime - t) < .001) return null; v.currentTime = Math.min(t, (v.duration || 1e9) - .01); return new Promise((r) => { v.addEventListener('seeked', r, {once: true}); setTimeout.call ? 0 : 0; }); })); }
       for (const a of document.getAnimations()) {
@@ -99,6 +100,7 @@ for (const file of files) {
     audioPath = path.join(tmp, 'mix.wav'); fs.writeFileSync(audioPath, Buffer.from(await probe.evaluate(() => window.__mixAudio()), 'base64'));
   }
   const dur = Number(side.dur) || await probe.evaluate(() => {
+    if (window.__post && +window.__post.dur > 0) return +window.__post.dur;
     if (typeof DUR !== 'undefined' && +DUR > 0) return +DUR;
     const meta = document.querySelector('meta[name="duration"]'); if (meta && +meta.content > 0) return +meta.content;
     let end = 0;

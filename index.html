@@ -3,489 +3,180 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>استوديو الريندر | Abdo Elmasry × Ahmed Ben Ali</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=Alexandria:wght@700;900&family=Syne:wght@800&display=swap">
-<style>
-:root{--bg:#fff;--soft:#F6F6F4;--ink:#111;--muted:#77756F;--line:#E7E6E1;--acc:#F1C21B;--ok:#12805C;--bad:#C62E2E}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;font-size:15px;line-height:1.65}
-.wrap{max-width:880px;margin:0 auto;padding:0 max(20px,env(safe-area-inset-left))}
-header{border-bottom:1px solid var(--line)}
-header .wrap{display:flex;justify-content:space-between;align-items:center;padding-block:16px}
-.brand{font:800 18px 'Syne',sans-serif;direction:ltr;letter-spacing:.02em}
-.brand b{background:var(--acc);padding:0 6px;border-radius:6px}
-a{color:inherit}
-h1{font:900 clamp(28px,5vw,44px)/1.2 'Alexandria',sans-serif;margin:44px 0 8px}
-.lead{color:var(--muted);margin:0 0 28px}
-.card{border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:18px;background:#fff}
-.card h2{font:700 18px 'Alexandria',sans-serif;margin:0 0 12px;display:flex;align-items:center;gap:10px}
-.num{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font:700 13px 'Syne'}
-.drop{display:block;border:2px dashed var(--line);border-radius:16px;padding:34px 16px;text-align:center;cursor:pointer;transition:.2s;background:var(--soft)}
-.drop.over{border-color:var(--ink);background:#fff}
-.drop b{font:700 17px 'Alexandria'}
-.btn{all:unset;cursor:pointer;background:var(--ink);color:#fff;font:700 14px 'Alexandria';padding:10px 18px;border-radius:12px;display:inline-block}
-.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
-.btn:focus-visible,.drop:focus-visible{outline:3px solid var(--acc);outline-offset:3px}
-input[type=password],input[type=text]{width:100%;font:inherit;border:1px solid var(--line);border-radius:12px;padding:10px 12px;direction:ltr}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.muted{color:var(--muted);font-size:13.5px}
-.status{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;background:var(--soft)}
-.pill{font:700 12px 'Alexandria';padding:3px 12px;border-radius:999px;white-space:nowrap}
-.pill.run{background:#FFF4CC;color:#7A5B00}.pill.ok{background:#DDF3EA;color:var(--ok)}.pill.bad{background:#FBE3E3;color:var(--bad)}.pill.idle{background:#eee;color:#555}
-.spin{width:18px;height:18px;border:3px solid #ddd;border-top-color:var(--ink);border-radius:50%;animation:s 1s linear infinite}
-@keyframes s{to{transform:rotate(360deg)}}
-.vids{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
-.vid{border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
-.vid .po{position:relative;width:100%;aspect-ratio:9/16;background:#111 center/cover no-repeat;cursor:pointer;border:0;padding:0;display:block}
-.vid .po.wide{aspect-ratio:16/9}.vid .po.sq{aspect-ratio:1}
-.vid .po::after{content:'▶';position:absolute;inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;font-size:22px;display:grid;place-items:center;padding-inline-start:4px;box-sizing:border-box}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.86);display:none;align-items:center;justify-content:center;z-index:99;padding:16px}
-.modal.on{display:flex}.modal video{max-width:100%;max-height:88vh;border-radius:14px;background:#000}
-.modal .x{position:absolute;top:14px;left:14px;width:44px;height:44px;border-radius:50%;border:0;background:#fff;font-size:20px;cursor:pointer}
-.jobs{display:flex;flex-direction:column;gap:10px}
-.job{padding:12px 14px;border-radius:14px;background:var(--soft)}
-.job .top{display:flex;justify-content:space-between;gap:10px;font:700 13px 'Alexandria'}
-.job .nm{direction:ltr;word-break:break-all}
-.bar{height:10px;border-radius:99px;background:#e4e3de;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:var(--acc);border-radius:99px;transition:width .6s}
-.job.done .bar i{background:var(--ok)}.job.fail .bar i{background:var(--bad)}
-.opts{margin-top:12px;font-size:14px}.opts select,.opts input[type=number]{font:inherit;border:1px solid var(--line);border-radius:10px;padding:6px 10px}
-
-.vid .meta{padding:10px 12px;display:flex;flex-direction:column;gap:6px}
-.vid .n{font:700 13px 'Alexandria';word-break:break-all;direction:ltr;text-align:right}
-.vid .acts{display:flex;gap:8px}
-.vid .acts a,.vid .acts button{all:unset;cursor:pointer;font:600 13px 'IBM Plex Sans Arabic';border:1px solid var(--line);border-radius:10px;padding:5px 10px}
-.vid .acts a{background:var(--ink);color:#fff;border-color:var(--ink)}
-details summary{cursor:pointer;font-weight:700}
-ol{padding-inline-start:20px;margin:8px 0}
-.msg{min-height:20px;font-size:13.5px;margin-top:10px}
-.msg.ok{color:var(--ok)}.msg.bad{color:var(--bad)}
-
-.ed{max-width:1320px;margin:0 auto 18px;padding:0 max(20px,env(safe-area-inset-left))}
-.ed .card{padding:18px}
-.edtop{display:grid;grid-template-columns:300px 1fr;gap:18px;align-items:start}
-@media(max-width:760px){.edtop{grid-template-columns:1fr}.pv{margin:0 auto}}
-.pv{width:300px;aspect-ratio:9/16;border-radius:16px;overflow:hidden;background:#000;position:relative}
-.pv iframe{border:0;width:100%;height:100%;display:block}
-.pv .ld[hidden]{display:none}
-.pv .ld{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font:700 14px 'Alexandria';background:#000}
-.insp{display:flex;flex-direction:column;gap:14px}
-.box{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--soft)}
-.box h3{font:700 15px 'Alexandria';margin:0 0 10px}
-.box label{font-size:13px;color:var(--muted);display:block;margin:8px 0 4px}
-.box input[type=text]{direction:rtl;font:700 18px 'IBM Plex Sans Arabic'}
-.box select{font:inherit;border:1px solid var(--line);border-radius:10px;padding:8px;width:100%;background:#fff}
-.keys{display:flex;gap:8px;flex-wrap:wrap}
-.keys button{all:unset;cursor:pointer;padding:6px 12px;border-radius:10px;border:2px solid transparent;font:700 13px 'Alexandria';background:#222;color:#fff}
-.keys button.on{border-color:#111;box-shadow:0 0 0 2px var(--acc)}
-.sm{all:unset;cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:10px;padding:6px 10px;font:600 13px 'IBM Plex Sans Arabic'}
-.sm.red{color:var(--bad);border-color:#F1C9C9}
-.sw{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
-.sw .lb{font:700 12px 'Alexandria';min-width:64px}
-.sw button{all:unset;cursor:pointer;width:24px;height:24px;border-radius:7px;border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
-.sw button.on{box-shadow:0 0 0 2px var(--ink)}
-.sw input[type=color]{width:28px;height:28px;border:0;padding:0;background:none;cursor:pointer}
-.tbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:16px 0 10px}
-.tbar .tm{font:600 14px monospace;direction:ltr;min-width:110px}
-.tl{display:grid;grid-template-columns:78px 1fr;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#15171d;direction:ltr;user-select:none;-webkit-user-select:none}
-.tl .lbls div{display:flex;align-items:center;justify-content:center;font:700 11.5px 'Alexandria';color:#aab;border-bottom:1px solid #23262f;background:#1b1e26;direction:rtl;box-sizing:border-box}
-.tl .sc{overflow-x:auto;overflow-y:hidden;position:relative}
-.tl .in{position:relative}
-.tl .ru{height:26px;border-bottom:1px solid #23262f;position:relative;cursor:pointer;box-sizing:border-box}
-.tl .ru span{position:absolute;top:5px;font:500 10.5px monospace;color:#778;transform:translateX(-50%)}
-.tl .ru i{position:absolute;bottom:0;width:1px;height:6px;background:#445}
-.tl canvas{display:block;height:64px;border-bottom:1px solid #23262f;cursor:pointer;box-sizing:border-box}
-.tl .tr{position:relative;border-bottom:1px solid #23262f;box-sizing:border-box}
-.tl .tr.caps{height:46px}.tl .tr.fx{height:64px}
-.wd{position:absolute;top:7px;height:32px;border-radius:7px;background:#2b3040;color:#fff;font:700 12.5px 'IBM Plex Sans Arabic';display:flex;align-items:center;justify-content:center;overflow:hidden;white-space:nowrap;cursor:grab;border:1.5px solid #3a4054;box-sizing:border-box;padding:0 3px;direction:rtl;touch-action:none}
-.wd.k1{background:#5a4a0c;border-color:#F5C518;color:#FFE27A}.wd.k2{background:#5a1f22;border-color:#EF5350;color:#FFB4B2}.wd.k3{background:#0f4a43;border-color:#26A69A;color:#9DEBDF}
-.wd.pg{border-left:3px solid #fff}
-.wd.sel,.fxm.sel{outline:2px solid #fff;outline-offset:1px;z-index:3}
-.fxm{position:absolute;height:24px;border-radius:12px;background:#2962FF;color:#fff;font:700 11.5px 'Alexandria';display:flex;align-items:center;gap:4px;padding:0 9px 0 5px;white-space:nowrap;cursor:grab;transform:translateX(-5px);direction:rtl;touch-action:none}
-.fxm::before{content:'';width:8px;height:8px;border-radius:50%;background:#fff;flex:none}
-.ph{position:absolute;top:0;bottom:0;width:2px;background:#FF3B30;pointer-events:none;z-index:5}
-.ph::before{content:'';position:absolute;top:0;left:-5px;border:6px solid transparent;border-top-color:#FF3B30}
-.hint{font-size:13px;color:var(--muted)}
-footer{color:var(--muted);font-size:13px;text-align:center;padding:30px 0 40px}
-</style>
+<title>Motion Studio | Abdo Elmasry × Ahmed Ben Ali</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="studio.css">
 </head>
 <body>
-<header><div class="wrap"><div class="brand">ABDO ELMASRY × <b>AHMED BEN ALI</b></div><a href="https://abdooelmasry4-cyber.github.io/motion-studio/" class="muted">مكتبة الاستايلات ←</a></div></header>
-<main class="wrap">
-  <h1>استوديو الريندر</h1>
-  <p class="lead">ارفع ملف المعاينة (HTML) واستلم الفيديو MP4 بجودة 1080×1920، من غير Claude ومن غير برامج.</p>
+<div class="app" id="app">
+  <!-- side rail -->
+  <nav class="rail" aria-label="الأقسام">
+    <div class="logo" title="Motion Studio"><span>M</span></div>
+    <button class="nav on" data-v="home" type="button"><i>⌂</i><span>الرئيسية</span></button>
+    <button class="nav" data-v="edit" type="button"><i>✂</i><span>المونتاج</span></button>
+    <button class="nav" data-v="queue" type="button"><i>◉</i><span>الريندر</span><b class="dot" id="runDot" hidden></b></button>
+    <button class="nav" data-v="lib" type="button"><i>▦</i><span>المكتبة</span></button>
+    <button class="nav" data-v="set" type="button"><i>⚙</i><span>الإعدادات</span></button>
+  </nav>
 
-  <section class="card" id="setup">
-    <h2><span class="num">0</span> الإعداد (مرة واحدة بس)</h2>
-    <div id="setupDone" hidden><span class="pill ok">متوصل ✓</span> <span class="muted" id="repoLbl"></span> <button class="btn ghost" id="logout" type="button" style="margin-inline-start:10px">تغيير المفتاح</button></div>
-    <div id="setupForm">
-      <details open><summary>إزاي تجيب المفتاح (Token)</summary>
-        <ol>
-          <li>افتح <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">صفحة إنشاء مفتاح جديد على جيتهاب</a>.</li>
-          <li>اكتب أي اسم، ومن <b>Repository access</b> اختار <b>Only select repositories</b> ← اختار ريبو الاستوديو ده.</li>
-          <li>من <b>Permissions</b>: خلي <b>Contents</b> = Read and write، و<b>Actions</b> = Read-only، و<b>Issues</b> = Read-only (علشان نسبة التقدم).</li>
-          <li>اضغط <b>Generate token</b> وانسخه والزقه هنا.</li>
-        </ol>
-        <p class="muted">المفتاح بيتحفظ على المتصفح بتاعك بس، ومحدش غيرك يقدر يشوفه.</p>
-      </details>
-      <div class="row" style="margin-top:10px"><input type="password" id="tok" placeholder="github_pat_..." autocomplete="off"><button class="btn" id="saveTok" type="button">حفظ</button></div>
-      <div class="row" style="margin-top:8px"><input type="text" id="repo" value="" aria-label="الريبو"></div>
+  <!-- HOME -->
+  <section class="view home on" data-view="home">
+    <header class="hero">
+      <div class="brand">MOTION STUDIO <em>ABDO × AHMED</em></div>
+      <h1>عدّل، ركّب، وصدّر<br><span>فيديو جاهز</span> من غير برامج.</h1>
+      <p>افتح ملف الـHTML بتاعك في المونتاج: قص، سرعة، كليبات، نصوص، موسيقى، ألوان وإضاءة، وبعدين صدّره MP4 بجودة 1080×1920.</p>
+    </header>
+    <div class="starts">
+      <label class="drop big" id="drop" tabindex="0">
+        <input type="file" id="file" accept=".html,text/html" hidden multiple>
+        <div class="dz-ic">⤓</div>
+        <b>افتح ملف HTML</b>
+        <span>اسحبه هنا أو اضغط. الملف القابل للتعديل بيفتح في المونتاج، والملفات الكتير بتروح للريندر على طول.</span>
+      </label>
+      <button class="tile" id="newProj" type="button"><div class="dz-ic">＋</div><b>مشروع جديد من فيديوهات</b><span>ابدأ من الصفر بكليباتك وصورك وصوتك.</span></button>
+      <button class="tile" data-go="lib" type="button"><div class="dz-ic">▦</div><b>الفيديوهات الجاهزة</b><span id="libCount">مكتبة كل اللي اترندر.</span></button>
     </div>
-    <div class="msg" id="setupMsg"></div>
-  </section>
-
-  <section class="card">
-    <h2><span class="num">1</span> ارفع ملف المعاينة</h2>
-    <label class="drop" id="drop" tabindex="0">
-      <b>اسحب ملف الـHTML هنا</b><br><span class="muted">أو اضغط تختاره من جهازك. لو الملف قابل للتعديل هيفتحلك المحرر، ولو قديم هيروح للريندر على طول.</span>
-      <input type="file" id="file" accept=".html,text/html" hidden multiple>
-    </label>
-    <details class="opts"><summary>لو الملف أي كود HTML تاني (مش من أكوادنا)</summary>
-      <div class="row" style="margin-top:10px">
+    <details class="opts card"><summary>ملف HTML مش من أكوادنا؟ (إعدادات الريندر)</summary>
+      <div class="row">
         <label>المقاس <select id="oSize"><option value="1080x1920">طولي 9:16</option><option value="1920x1080">عرضي 16:9</option><option value="1080x1080">مربع 1:1</option></select></label>
-        <label>المدة بالثواني <input type="number" id="oDur" min="1" max="600" step="0.5" placeholder="تلقائي" style="width:110px"></label>
+        <label>المدة بالثواني <input type="number" id="oDur" min="1" max="600" step="0.5" placeholder="تلقائي"></label>
         <label>صوت (اختياري) <input type="file" id="oAud" accept="audio/*"></label>
       </div>
-      <p class="muted" style="margin:6px 0 0">أكوادنا بتتعرف لوحدها. الإعدادات دي بس للأكواد التانية، ولو سبت المدة فاضية هيحسبها لوحده.</p>
     </details>
     <div class="msg" id="upMsg"></div>
   </section>
 
-</main>
-
-<section class="ed" id="editor" hidden>
-  <div class="card">
-    <h2><span class="num">2</span> التعديل <span class="muted" id="edName" style="font:600 13px 'IBM Plex Sans Arabic';direction:ltr"></span></h2>
-    <div class="edtop">
-      <div class="pv"><iframe id="pv" title="معاينة"></iframe><div class="ld" id="pvLd">بيحمّل المعاينة…</div></div>
-      <div class="insp">
-        <div class="box" id="insp"><h3>اختار حاجة من التايملاين</h3><p class="hint">• اضغط على كلمة علشان تعدّل نصها أو لونها، واسحبها يمين وشمال علشان تظبط توقيتها.<br>• اضغط على مؤثر صوتي علشان تغيّر نوعه أو صوته أو تمسحه، واسحبه لمكانه.<br>• اضغط على المسطرة أو موجة الصوت علشان تروح لأي لحظة. المسافة = تشغيل/إيقاف.</p></div>
-        <div class="box" id="colBox"><h3>الألوان</h3><div id="cols"></div></div>
-        <div class="row">
-          <button class="btn" id="exportBtn" type="button">🎬 تصدير الفيديو</button>
-          <button class="btn ghost" id="saveHtml" type="button">⬇ حفظ ملف HTML</button>
-          <button class="btn ghost" id="closeEd" type="button">قفل</button>
+  <!-- EDITOR -->
+  <section class="view edit" data-view="edit">
+    <div class="ed-empty" id="edEmpty">
+      <div class="dz-ic">✂</div><b>مفيش مشروع مفتوح</b><span>افتح ملف HTML من الرئيسية، أو ابدأ مشروع جديد.</span>
+      <div class="row center"><button class="btn" data-go="home" type="button">افتح ملف</button><button class="btn ghost" id="newProj2" type="button">مشروع جديد</button></div>
+    </div>
+    <div class="ed-app" id="edApp" hidden>
+      <div class="topbar">
+        <div class="tb-l"><input class="pname" id="pName" aria-label="اسم المشروع" spellcheck="false"><span class="saved" id="savedLbl"></span></div>
+        <div class="tb-m">
+          <button class="ico" id="undo" type="button" title="تراجع (Ctrl+Z)">↶</button>
+          <button class="ico" id="redo" type="button" title="إعادة (Ctrl+Y)">↷</button>
         </div>
-        <div class="msg" id="edMsg"></div>
+        <div class="tb-r">
+          <button class="btn ghost sm" id="saveHtml" type="button">⬇ حفظ HTML</button>
+          <button class="btn glow" id="exportBtn" type="button">تصدير ⟶</button>
+        </div>
+      </div>
+      <div class="ed-main">
+        <aside class="assets">
+          <div class="tabs" role="tablist">
+            <button class="tab on" data-t="media" type="button"><i>▣</i>ميديا</button>
+            <button class="tab" data-t="audio" type="button"><i>♫</i>صوت</button>
+            <button class="tab" data-t="text" type="button"><i>T</i>نصوص</button>
+            <button class="tab" data-t="filters" type="button"><i>✦</i>فلاتر</button>
+            <button class="tab" data-t="adjust" type="button"><i>☀</i>ضبط</button>
+            <button class="tab" data-t="tr" type="button"><i>⧉</i>انتقالات</button>
+          </div>
+          <div class="pane on" data-p="media">
+            <label class="imp"><input type="file" id="mediaIn" accept="video/*,image/*,audio/*" multiple hidden><b>＋ استيراد</b><span>فيديو · صور · صوت</span></label>
+            <div class="mgrid" id="mGrid"></div>
+            <p class="hint">اضغط ＋ تحت الملف علشان تحطه في التايملاين عند المؤشر، أو «طبقة» علشان يظهر فوق الفيديو.</p>
+          </div>
+          <div class="pane" data-p="audio">
+            <label class="imp"><input type="file" id="musicIn" accept="audio/*,video/*" multiple hidden><b>＋ موسيقى / صوت</b><span>MP3 · WAV · M4A</span></label>
+            <h4>مؤثرات صوتية</h4><div class="sfxl" id="sfxList"></div>
+          </div>
+          <div class="pane" data-p="text"><div class="tgrid" id="tGrid"></div></div>
+          <div class="pane" data-p="filters"><p class="hint" id="fHint">الفلتر بيتطبق على الفيديو كله، ولو مختار كليب بيتطبق عليه هو بس.</p><div class="fgrid" id="fGrid"></div></div>
+          <div class="pane" data-p="adjust"><p class="hint" id="aHint"></p><div id="adjBox"></div><button class="btn ghost sm" id="adjReset" type="button">رجّع الافتراضي</button></div>
+          <div class="pane" data-p="tr"><p class="hint">اختار كليب، والانتقال هيتعمل في أوله.</p><div class="trgrid" id="trGrid"></div></div>
+        </aside>
+        <div class="stage">
+          <div class="pvwrap" id="pvWrap"><div class="pvbox" id="pvBox"><iframe id="pv" title="معاينة"></iframe><div class="ld" id="pvLd"><div class="spin"></div>بيحمّل المعاينة…</div></div></div>
+          <div class="pctl">
+            <span class="tc" id="tcNow">00:00.00</span>
+            <div class="pbtns">
+              <button class="ico" id="toStart" type="button" title="البداية">⏮</button>
+              <button class="ico" id="fBack" type="button" title="فريم لورا">‹</button>
+              <button class="play" id="tPlay" type="button" aria-label="تشغيل">▶</button>
+              <button class="ico" id="fFwd" type="button" title="فريم لقدام">›</button>
+              <button class="ico" id="toEnd" type="button" title="النهاية">⏭</button>
+            </div>
+            <span class="tc dim" id="tcDur">00:00.00</span>
+          </div>
+        </div>
+        <aside class="insp" id="insp"></aside>
+      </div>
+      <div class="tools">
+        <button class="tl-b" id="bSplit" type="button" title="قص عند المؤشر (S)">✂ قص</button>
+        <button class="tl-b" id="bDel" type="button" title="مسح (Delete)">🗑 مسح</button>
+        <button class="tl-b" id="bDup" type="button" title="تكرار (Ctrl+D)">⧉ تكرار</button>
+        <button class="tl-b" id="bTrimL" type="button" title="احذف اللي قبل المؤشر (Q)">⇤ اقطع البداية</button>
+        <button class="tl-b" id="bTrimR" type="button" title="احذف اللي بعد المؤشر (W)">⇥ اقطع النهاية</button>
+        <button class="tl-b" id="bFreeze" type="button" title="ثبّت صورة من المؤشر">❄ تثبيت فريم</button>
+        <span class="sep"></span>
+        <button class="tl-b" id="bAddText" type="button">T نص</button>
+        <button class="tl-b" id="bAddFx" type="button">♪ مؤثر</button>
+        <button class="tl-b tog on" id="bSnap" type="button" title="مغناطيس">🧲</button>
+        <span class="grow"></span>
+        <span class="zl">−</span><input type="range" id="zoom" min="20" max="400" value="90" aria-label="تكبير التايملاين"><span class="zl">＋</span>
+      </div>
+      <div class="tl" id="tl">
+        <div class="lbls" id="lbls"></div>
+        <div class="sc" id="tsc"><div class="in" id="tin"></div></div>
       </div>
     </div>
-    <div class="tbar">
-      <button class="btn" id="tPlay" type="button">▶ تشغيل</button>
-      <span class="tm" id="tTime">0.00 / 0.00</span>
-      <button class="sm" id="addFx" type="button">＋ مؤثر صوتي هنا</button>
-      <button class="sm" id="undo" type="button">↶ تراجع</button>
-      <span class="muted" style="margin-inline-start:auto">تكبير</span><input type="range" id="zoom" min="40" max="260" value="160" aria-label="تكبير التايملاين">
-    </div>
-    <div class="tl" id="tl">
-      <div class="lbls"><div style="height:26px"></div><div style="height:64px">صوت أحمد</div><div style="height:46px">الكلام</div><div style="height:64px">المؤثرات</div></div>
-      <div class="sc" id="tsc"><div class="in" id="tin"><div class="ru" id="ru"></div><canvas id="wave"></canvas><div class="tr caps" id="tcaps"></div><div class="tr fx" id="tfx"></div><div class="ph" id="ph"></div></div></div>
-    </div>
-  </div>
-</section>
-<main class="wrap">
-  <section class="card">
-    <h2><span class="num">3</span> حالة الريندر</h2>
-    <div class="status" id="status"><span class="pill idle">مستني</span><span class="muted">مفيش ريندر شغال دلوقتي.</span></div>
-    <div class="jobs" id="jobs" style="margin-top:12px"></div>
   </section>
 
-  <section class="card">
-    <h2><span class="num">4</span> الفيديوهات الجاهزة</h2>
+  <!-- QUEUE -->
+  <section class="view queue" data-view="queue">
+    <h2 class="vt">الريندر</h2>
+    <div class="status card" id="status"><span class="pill idle">مستني</span><span class="muted">مفيش ريندر شغال.</span></div>
+    <div class="jobs" id="jobs"></div>
+  </section>
+
+  <!-- LIBRARY -->
+  <section class="view lib" data-view="lib">
+    <h2 class="vt">الفيديوهات الجاهزة <input class="search" id="libQ" placeholder="دوّر بالاسم…" aria-label="بحث"></h2>
     <div class="vids" id="vids"><p class="muted">لسه مفيش فيديوهات.</p></div>
   </section>
-</main>
-<section class="wrap"><details class="card"><summary style="font:700 16px 'Alexandria';cursor:pointer">📲 رسالة تليجرام لما الفيديو يخلص</summary>
-  <ol>
-    <li>افتح تليجرام وكلّم <a href="https://t.me/BotFather" target="_blank" rel="noopener">@BotFather</a>، ابعتله <b dir="ltr">/newbot</b> واختار اسم للبوت. هيبعتلك <b>توكن</b> (سطر طويل فيه نقطتين).</li>
-    <li>افتح البوت الجديد بتاعك وابعتله أي رسالة (مثلاً «أهلاً»).</li>
-    <li>كلّم <a href="https://t.me/userinfobot" target="_blank" rel="noopener">@userinfobot</a> وهيبعتلك رقم <b>Id</b> بتاعك.</li>
-    <li>افتح <a id="secLink" target="_blank" rel="noopener">إعدادات الأسرار في الريبو</a> واضغط <b>New repository secret</b> مرتين:<br><b dir="ltr">TG_TOKEN</b> = التوكن من BotFather<br><b dir="ltr">TG_CHAT</b> = رقم الـId بتاعك.</li>
-  </ol>
-  <p class="muted">المفاتيح دي بتتحفظ في جيتهاب بس، ما تبعتهاش لحد.</p>
-</details></section>
+
+  <!-- SETTINGS -->
+  <section class="view set" data-view="set">
+    <h2 class="vt">الإعدادات</h2>
+    <div class="card" id="setup">
+      <h3>الاتصال بجيتهاب</h3>
+      <div id="setupDone" hidden><span class="pill ok">متوصل ✓</span> <span class="muted" id="repoLbl"></span> <button class="btn ghost sm" id="logout" type="button">تغيير المفتاح</button></div>
+      <div id="setupForm">
+        <ol>
+          <li>افتح <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">صفحة إنشاء مفتاح جديد على جيتهاب</a>.</li>
+          <li>من <b>Repository access</b> اختار <b>Only select repositories</b> ← ريبو الاستوديو.</li>
+          <li><b>Contents</b> = Read and write، <b>Actions</b> = Read-only، <b>Issues</b> = Read-only.</li>
+          <li>اضغط <b>Generate token</b> وانسخه والزقه هنا.</li>
+        </ol>
+        <div class="row"><input type="password" id="tok" placeholder="github_pat_..." autocomplete="off"><button class="btn" id="saveTok" type="button">حفظ</button></div>
+        <div class="row"><input type="text" id="repo" aria-label="الريبو"></div>
+        <p class="muted">المفتاح بيتحفظ على المتصفح بتاعك بس.</p>
+      </div>
+      <div class="msg" id="setupMsg"></div>
+    </div>
+    <details class="card"><summary>📲 رسالة تليجرام لما الفيديو يخلص</summary>
+      <ol>
+        <li>كلّم <a href="https://t.me/BotFather" target="_blank" rel="noopener">@BotFather</a>، ابعت <b dir="ltr">/newbot</b> وخد التوكن.</li>
+        <li>ابعت أي رسالة للبوت بتاعك، وبعدين خد رقمك من <a href="https://t.me/userinfobot" target="_blank" rel="noopener">@userinfobot</a>.</li>
+        <li>افتح <a id="secLink" target="_blank" rel="noopener">أسرار الريبو</a> وضيف <b dir="ltr">TG_TOKEN</b> و<b dir="ltr">TG_CHAT</b>.</li>
+      </ol>
+      <p class="muted">المفاتيح دي بتتحفظ في جيتهاب بس، ما تبعتهاش لحد.</p>
+    </details>
+    <div class="card"><h3>اختصارات المونتاج</h3>
+      <div class="keys-help"><kbd>Space</kbd> تشغيل/إيقاف <kbd>S</kbd> قص <kbd>Delete</kbd> مسح <kbd>Q</kbd>/<kbd>W</kbd> قطع البداية/النهاية <kbd>Ctrl+Z</kbd> تراجع <kbd>Ctrl+Y</kbd> إعادة <kbd>Ctrl+D</kbd> تكرار <kbd>← →</kbd> فريم <kbd>Shift+← →</kbd> ثانية <kbd>Ctrl+عجلة</kbd> تكبير</div>
+    </div>
+  </section>
+</div>
+
 <div class="modal" id="modal"><button class="x" id="mx" type="button" aria-label="قفل">✕</button><video id="mv" controls playsinline preload="auto"></video></div>
-<footer>Abdo Elmasry × Ahmed Ben Ali — Motion Studio</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="exp" id="exp" hidden><div class="exp-c"><div class="spin"></div><b id="expT">بيجهّز الملف…</b><span id="expS" class="muted"></span></div></div>
 
-<script>
-const LS = {get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} }};
-const $ = id => document.getElementById(id);
-const AUTO = (location.hostname.endsWith('.github.io') && location.pathname.split('/')[1]) ? location.hostname.split('.')[0] + '/' + location.pathname.split('/')[1] : 'abdooelmasry4-cyber/video-studio';
-let TOKEN = LS.get('vs_token'), REPO = LS.get('vs_repo') || AUTO;
-const api = async (path, opt = {}) => {
-  const r = await fetch('https://api.github.com/repos/' + REPO + path, {...opt, headers: {Accept: 'application/vnd.github+json', Authorization: 'Bearer ' + TOKEN, 'X-GitHub-Api-Version': '2022-11-28', ...(opt.headers || {})}});
-  if (r.status === 204) return null;
-  const j = await r.json().catch(() => ({}));
-  if (!r.ok) throw Object.assign(new Error(j.message || r.status), {status: r.status});
-  return j;
-};
-const msg = (id, t, cls = '') => { const el = $(id); el.textContent = t; el.className = 'msg ' + cls; };
-function showSetup(){
-  const ok = !!TOKEN;
-  $('setupDone').hidden = !ok; $('setupForm').hidden = ok; $('repoLbl').textContent = REPO;
-}
-$('saveTok').onclick = async () => {
-  TOKEN = $('tok').value.trim(); REPO = $('repo').value.trim();
-  if (!TOKEN) return msg('setupMsg', 'الزق المفتاح الأول.', 'bad');
-  try { await api(''); LS.set('vs_token', TOKEN); LS.set('vs_repo', REPO); msg('setupMsg', 'تمام، اتوصل بالريبو ✓', 'ok'); showSetup(); refresh(); }
-  catch (e) { TOKEN = null; msg('setupMsg', 'المفتاح أو اسم الريبو غلط: ' + e.message, 'bad'); }
-};
-$('logout').onclick = () => { LS.set('vs_token', null); TOKEN = null; showSetup(); };
-
-const slug = s => (s.replace(/\.html?$/i, '').replace(/[^A-Za-z0-9_-]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 40) || 'video');
-const b64buf = async (f) => { const buf = new Uint8Array(await f.arrayBuffer()); let bin = ''; for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000)); return btoa(bin); };
-async function upload(files){
-  if (!TOKEN) return msg('upMsg', 'اعمل الإعداد (خطوة 0) الأول.', 'bad');
-  files = files.filter(f => /\.html?$/i.test(f.name)); if (!files.length) return;
-  const stamp = new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '');
-  const aud = $('oAud').files[0], [w, h] = $('oSize').value.split('x').map(Number), dur = +$('oDur').value || 0;
-  try {
-    msg('upMsg', `بيرفع ${files.length} ملف…`);
-    const ref = await api('/git/ref/heads/main'), base = await api('/git/commits/' + ref.object.sha);
-    const tree = [], blob = async (p, content) => { const b = await api('/git/blobs', {method: 'POST', body: JSON.stringify({content, encoding: 'base64'})}); tree.push({path: p, mode: '100644', type: 'blob', sha: b.sha}); };
-    for (const f of files) {
-      const name = `${slug(f.name)}_${stamp}`, html = await f.text();
-      const ours = /id="reel"/.test(html) && /function\s+render\s*\(/.test(html);
-      if (!ours) { const side = {w, h}; if (dur) side.dur = dur;
-        if (aud) { const ext = (aud.name.split('.').pop() || 'mp3').toLowerCase(); side.audio = `${name}.${ext}`; await blob(`input/${side.audio}`, await b64buf(aud)); }
-        await blob(`input/${name}.json`, btoa(JSON.stringify(side))); }
-      await blob(`input/${name}.html`, await b64buf(f));
-    }
-    const t = await api('/git/trees', {method: 'POST', body: JSON.stringify({base_tree: base.tree.sha, tree})});
-    const c = await api('/git/commits', {method: 'POST', body: JSON.stringify({message: 'Render ' + files.map(f => f.name).join(', '), tree: t.sha, parents: [ref.object.sha]})});
-    await api('/git/refs/heads/main', {method: 'PATCH', body: JSON.stringify({sha: c.sha})});
-    msg('upMsg', `✓ اترفع ${files.length > 1 ? files.length + ' ملفات، وهيترندروا مع بعض في نفس الوقت' : ''}. تابع التقدم في خطوة 3.`, 'ok');
-  } catch (e) { msg('upMsg', 'الرفع ما تمّش: ' + e.message, 'bad'); }
-  setTimeout(refresh, 5000);
-}
-const drop = $('drop'), fi = $('file');
-drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('over'); });
-drop.addEventListener('dragleave', () => drop.classList.remove('over'));
-drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('over'); route([...e.dataTransfer.files]); });
-fi.addEventListener('change', () => { route([...fi.files]); fi.value = ''; });
-drop.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fi.click(); } });
-
-/* ================= timeline editor ================= */
-const SFX_AR = {whoosh_fast: 'ووش سريع', whoosh_big: 'ووش كبير', swipe: 'سحبة', impact: 'خبطة', hit_small: 'خبطة صغيرة', stamp: 'ختم', pop: 'بوب', pencil: 'قلم', marker: 'ماركر', paper: 'ورق', coins: 'فلوس', ding: 'دينج', buzz: 'غلط', riser: 'رايزر', glitch: 'جليتش', typing: 'كتابة', count: 'عدّاد', click: 'كليك'};
-const KEYS = [['عادي', 0, '#2b3040'], ['أصفر', 1, '#F5C518'], ['أحمر', 2, '#EF5350'], ['أخضر', 3, '#26A69A']];
-const EDRE = /(<script type="application\/json" id="edit-data">)([\s\S]*?)(<\/script>)/;
-let EDF = null; // {name, html, ed, colors:{}}
-let PX = 160, SEL = null, UNDO = [], pvWin = null, applyT = null;
-const pvEl = $('pv');
-const clone = o => JSON.parse(JSON.stringify(o));
-const esc = s => s.replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
-
-async function route(files){
-  const batch = [];
-  for (const f of files) {
-    if (!/\.html?$/i.test(f.name)) { msg('upMsg', `«${f.name}» مش ملف HTML.`, 'bad'); continue; }
-    const html = await f.text(); const m = html.match(EDRE);
-    if (m && files.length === 1) { openEditor(f.name, html, JSON.parse(m[2])); msg('upMsg', '✓ الملف اتفتح في المحرر تحت.', 'ok'); return; }
-    batch.push(f);
-  }
-  if (batch.length) upload(batch);
-};
-
-function openEditor(name, html, ed){
-  EDF = {name, html, ed, colors: {}}; SEL = null; UNDO = [];
-  $('editor').hidden = false; $('edName').textContent = name; $('pvLd').hidden = false; msg('edMsg', '');
-  const fit = '<style id="__fit">html,body{margin:0!important;padding:0!important;background:#000!important;display:block!important;min-height:0!important;overflow:hidden!important}body>*:not(#reel){display:none!important}#reel{width:100vw!important;height:177.78vw!important;max-width:none!important;border-radius:0!important;box-shadow:none!important}</style>';
-  const url = URL.createObjectURL(new Blob([html.replace('</head>', fit + '</head>')], {type: 'text/html'}));
-  pvEl.onload = async () => {
-    pvWin = pvEl.contentWindow;
-    try { await pvWin.document.fonts.ready; } catch (e) {}
-    $('pvLd').hidden = true; buildCols(); drawAll(); seek(0.5);
-    try { const p = await pvWin.__voicePeaks(Math.ceil(EDF.ed.dur * 40)); EDF.peaks = p; drawWave(); } catch (e) {}
-  };
-  pvEl.src = url;
-  $('editor').scrollIntoView({behavior: 'smooth', block: 'start'});
-}
-$('closeEd').onclick = () => { if (pvWin && pvWin.pause) pvWin.pause(); $('editor').hidden = true; pvEl.src = 'about:blank'; EDF = null; };
-
-/* ---- state changes ---- */
-function snap(){ UNDO.push(clone(EDF.ed)); if (UNDO.length > 80) UNDO.shift(); }
-function changed(redraw = true){
-  if (redraw) drawAll();
-  clearTimeout(applyT); applyT = setTimeout(() => { if (pvWin && pvWin.__setEdit) pvWin.__setEdit(clone(EDF.ed)); }, 220);
-}
-$('undo').onclick = () => { if (!UNDO.length) return; EDF.ed = UNDO.pop(); SEL = null; showInsp(); changed(); };
-
-/* ---- playback ---- */
-const vo = () => pvWin && pvWin.document.getElementById('vo');
-function seek(t){ const v = vo(); if (!v) return; t = Math.max(0, Math.min(EDF.ed.dur, t)); v.currentTime = t; if (v.paused) pvWin.render(t); movePh(t); }
-function toggle(){ const v = vo(); if (!v) return; if (v.paused) pvWin.play(); else pvWin.pause(); }
-$('tPlay').onclick = toggle;
-document.addEventListener('keydown', e => {
-  if (!EDF || $('editor').hidden || /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;
-  if (e.code === 'Space') { e.preventDefault(); toggle(); }
-  if ((e.key === 'Delete' || e.key === 'Backspace') && SEL && SEL.type === 'fx') { e.preventDefault(); delFx(); }
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); $('undo').click(); }
-});
-function movePh(t){ $('ph').style.left = (t * PX) + 'px'; $('tTime').textContent = `${t.toFixed(2)} / ${EDF.ed.dur.toFixed(2)}`; }
-(function tick(){
-  const v = vo();
-  if (EDF && v) {
-    const t = v.currentTime; movePh(t); $('tPlay').textContent = v.paused ? '▶ تشغيل' : '⏸ إيقاف';
-    if (!v.paused) { const sc = $('tsc'), x = t * PX; if (x < sc.scrollLeft + 40 || x > sc.scrollLeft + sc.clientWidth - 80) sc.scrollLeft = x - 120; }
-  }
-  requestAnimationFrame(tick);
-})();
-const tAt = e => { const r = $('tin').getBoundingClientRect(); return (e.clientX - r.left) / PX; };
-$('ru').addEventListener('pointerdown', e => seek(tAt(e)));
-$('wave').addEventListener('pointerdown', e => seek(tAt(e)));
-$('zoom').oninput = e => { const sc = $('tsc'), mid = (sc.scrollLeft + sc.clientWidth / 2) / PX; PX = +e.target.value; drawAll(); drawWave(); sc.scrollLeft = mid * PX - sc.clientWidth / 2; };
-
-/* ---- drawing ---- */
-function pageStarts(W){ const s = new Set([0]); let st = 0; for (let k = 1; k < W.length; k++) if (k - st >= 4 || W[k][1] - W[k - 1][1] > .42 || /[؟.،]$/.test(W[k - 1][0])) { s.add(k); st = k; } return s; }
-function drawAll(){
-  if (!EDF) return;
-  const D = EDF.ed.dur, W = D * PX; $('tin').style.width = W + 'px';
-  let ru = ''; const step = PX > 150 ? .5 : PX > 70 ? 1 : 2;
-  for (let s = 0; s <= D; s += step) ru += `<i style="left:${s * PX}px"></i>` + (s % (step * 2) === 0 ? `<span style="left:${s * PX}px">${s.toFixed(s % 1 ? 1 : 0)}s</span>` : '');
-  $('ru').innerHTML = ru;
-  const words = EDF.ed.words, ps = pageStarts(words); let h = '';
-  words.forEach((w, i) => { const nx = i + 1 < words.length ? words[i + 1][1] : Math.min(D, w[1] + .6); const wd = Math.max(16, (nx - w[1]) * PX - 2);
-    h += `<div class="wd${w[2] ? ' k' + w[2] : ''}${ps.has(i) ? ' pg' : ''}${SEL && SEL.type === 'w' && SEL.i === i ? ' sel' : ''}" data-i="${i}" style="left:${w[1] * PX}px;width:${wd}px" title="${esc(w[0])}">${esc(w[0])}</div>`; });
-  $('tcaps').innerHTML = h;
-  const fx = EDF.ed.sfx.map((f, i) => [f, i]).sort((a, b) => a[0][1] - b[0][1]); const rows = [-1e9, -1e9]; h = '';
-  for (const [f, i] of fx) { const lab = SFX_AR[f[0]] || f[0], x = f[1] * PX, w = lab.length * 8 + 28; let r = x > rows[0] ? 0 : x > rows[1] ? 1 : (rows[0] < rows[1] ? 0 : 1); rows[r] = x + w;
-    h += `<div class="fxm${SEL && SEL.type === 'fx' && SEL.i === i ? ' sel' : ''}" data-i="${i}" style="left:${x}px;top:${6 + r * 29}px">${esc(lab)}</div>`; }
-  $('tfx').innerHTML = h;
-}
-function drawWave(){
-  const c = $('wave'), D = EDF.ed.dur, W = Math.min(32000, Math.ceil(D * PX)); c.width = W; c.height = 64; c.style.width = W + 'px';
-  const g = c.getContext('2d'); g.fillStyle = '#15171d'; g.fillRect(0, 0, W, 64); const p = EDF.peaks; if (!p) return;
-  g.fillStyle = '#5B8CFF'; for (let x = 0; x < W; x++) { const v = p[Math.min(p.length - 1, Math.floor(x / W * p.length))] || 0, hh = Math.max(1, v * 58); g.fillRect(x, 32 - hh / 2, 1, hh); }
-}
-
-/* ---- dragging + selecting ---- */
-function dragger(track, type){
-  track.addEventListener('pointerdown', e => {
-    const el = e.target.closest(type === 'w' ? '.wd' : '.fxm'); if (!el) return;
-    e.preventDefault(); const i = +el.dataset.i, x0 = e.clientX; let moved = false, snapped = false;
-    const arr = type === 'w' ? EDF.ed.words : EDF.ed.sfx, t0 = arr[i][1];
-    el.setPointerCapture(e.pointerId);
-    const mv = ev => { const dx = ev.clientX - x0; if (!moved && Math.abs(dx) < 4) return; if (!snapped) { snap(); snapped = true; } moved = true;
-      let t = t0 + dx / PX;
-      if (type === 'w') { const lo = i ? arr[i - 1][1] + .03 : 0, hi = i + 1 < arr.length ? arr[i + 1][1] - .03 : EDF.ed.dur - .05; t = Math.max(lo, Math.min(hi, t)); }
-      else t = Math.max(0, Math.min(EDF.ed.dur - .05, t));
-      arr[i][1] = Math.round(t * 1000) / 1000; el.style.left = (arr[i][1] * PX) + 'px'; seekQuiet(arr[i][1]); };
-    const up = () => { el.removeEventListener('pointermove', mv); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up);
-      SEL = {type, i}; showInsp(); if (moved) changed(); else { drawAll(); seek(arr[i][1]); } };
-    el.addEventListener('pointermove', mv); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
-  });
-}
-function seekQuiet(t){ const v = vo(); if (v && v.paused) { v.currentTime = t; pvWin.render(t); movePh(t); } }
-dragger($('tcaps'), 'w'); dragger($('tfx'), 'fx');
-
-/* ---- inspector ---- */
-function nudge(d){ const arr = SEL.type === 'w' ? EDF.ed.words : EDF.ed.sfx, i = SEL.i; snap(); let t = arr[i][1] + d; if (SEL.type === 'w') { const lo = i ? arr[i - 1][1] + .03 : 0, hi = i + 1 < arr.length ? arr[i + 1][1] - .03 : EDF.ed.dur - .05; t = Math.max(lo, Math.min(hi, t)); } arr[i][1] = Math.max(0, Math.round(t * 1000) / 1000); changed(); showInsp(); seek(arr[i][1]); }
-function delFx(){ snap(); EDF.ed.sfx.splice(SEL.i, 1); SEL = null; showInsp(); changed(); }
-function showInsp(){
-  const b = $('insp');
-  if (!SEL) { b.innerHTML = '<h3>اختار حاجة من التايملاين</h3><p class="hint">اضغط على كلمة أو مؤثر صوتي علشان تعدّله.</p>'; return; }
-  if (SEL.type === 'w') {
-    const w = EDF.ed.words[SEL.i];
-    b.innerHTML = `<h3>كلمة في الكابشن</h3><label>النص</label><input type="text" id="iTxt"><label>اللون</label><div class="keys">${KEYS.map(([n, k, c]) => `<button type="button" data-k="${k}" class="${(w[2] || 0) === k ? 'on' : ''}" style="background:${c};${k === 1 ? 'color:#111' : ''}">${n}</button>`).join('')}</div>
-      <label>التوقيت: <b dir="ltr">${w[1].toFixed(2)}s</b></label><div class="row"><button class="sm" id="iL" type="button">−0.05</button><button class="sm" id="iR" type="button">+0.05</button><button class="sm" id="iPl" type="button">▶ اسمع من هنا</button></div>`;
-    const ip = $('iTxt'); ip.value = w[0]; let first = true;
-    ip.oninput = () => { if (first) { snap(); first = false; } w[0] = ip.value; changed(); };
-    b.querySelectorAll('.keys button').forEach(x => x.onclick = () => { snap(); w[2] = +x.dataset.k; changed(); showInsp(); });
-  } else {
-    const f = EDF.ed.sfx[SEL.i]; const names = (pvWin && pvWin.SFX_NAMES ? pvWin.SFX_NAMES() : Object.keys(SFX_AR));
-    b.innerHTML = `<h3>مؤثر صوتي</h3><label>النوع</label><select id="iType">${names.map(n => `<option value="${n}"${n === f[0] ? ' selected' : ''}>${SFX_AR[n] || n}</option>`).join('')}</select>
-      <label>قوة الصوت: <b id="iVolL">${Math.round(f[2] / .6 * 100)}%</b> <span class="muted">(دايماً تحت صوت أحمد)</span></label><input type="range" id="iVol" min="5" max="100" value="${Math.round(f[2] / .6 * 100)}" style="width:100%">
-      <label>التوقيت: <b dir="ltr">${f[1].toFixed(2)}s</b></label><div class="row"><button class="sm" id="iL" type="button">−0.05</button><button class="sm" id="iR" type="button">+0.05</button><button class="sm" id="iPl" type="button">▶ اسمعه</button><button class="sm red" id="iDel" type="button">🗑 مسح</button></div>`;
-    $('iType').onchange = e => { snap(); f[0] = e.target.value; changed(); };
-    let first = true; $('iVol').oninput = e => { if (first) { snap(); first = false; } f[2] = Math.round(+e.target.value / 100 * .6 * 1000) / 1000; $('iVolL').textContent = e.target.value + '%'; changed(false); };
-    $('iDel').onclick = delFx;
-  }
-  $('iL').onclick = () => nudge(-.05); $('iR').onclick = () => nudge(.05);
-  $('iPl').onclick = () => { const arr = SEL.type === 'w' ? EDF.ed.words : EDF.ed.sfx; seek(Math.max(0, arr[SEL.i][1] - .6)); setTimeout(() => { const v = vo(); if (v && v.paused) pvWin.play(); }, 350); };
-}
-$('addFx').onclick = () => { if (!EDF) return; const v = vo(); snap(); EDF.ed.sfx.push(['pop', Math.round((v ? v.currentTime : 0) * 1000) / 1000, .25]); SEL = {type: 'fx', i: EDF.ed.sfx.length - 1}; changed(); showInsp(); };
-
-/* ---- colours (from the file's own palette) ---- */
-function buildCols(){
-  let P = []; try { P = pvWin.eval('typeof PALETTE !== "undefined" ? PALETTE : []'); } catch (e) {}
-  const box = $('cols'); $('colBox').hidden = !P.length; box.innerHTML = '';
-  P.forEach(p => {
-    const row = document.createElement('div'); row.className = 'sw';
-    const cur = (EDF.colors[p.v] || pvWin.getComputedStyle(pvWin.document.getElementById('reel')).getPropertyValue(p.v).trim() || p.opts[0]).toUpperCase();
-    row.innerHTML = `<span class="lb">${esc(p.label)}</span>` + p.opts.map(o => `<button type="button" style="background:${o}" data-c="${o}" class="${o.toUpperCase() === cur ? 'on' : ''}" aria-label="${o}"></button>`).join('') + `<input type="color" value="${cur.length === 7 ? cur : '#ffffff'}" aria-label="لون مخصص">`;
-    const set = c => { EDF.colors[p.v] = c.toUpperCase(); try { pvWin.applyCol ? pvWin.applyCol(p.v, c) : pvWin.document.getElementById('reel').style.setProperty(p.v, c); } catch (e) {} const v = vo(); if (v && v.paused) pvWin.render(v.currentTime); row.querySelectorAll('button').forEach(x => x.classList.toggle('on', x.dataset.c.toUpperCase() === c.toUpperCase())); };
-    row.querySelectorAll('button').forEach(x => x.onclick = () => set(x.dataset.c));
-    row.querySelector('input').oninput = e => set(e.target.value);
-    box.appendChild(row);
-  });
-}
-
-/* ---- export ---- */
-function bakeHtml(){
-  let h = EDF.html.replace(EDRE, (m, a, b, c) => a + JSON.stringify(EDF.ed).replace(/</g, '\\u003c') + c);
-  const cols = Object.entries(EDF.colors);
-  if (cols.length) { const css = '<style id="baked">:root{' + cols.map(([k, v]) => `${k}:${v}`).join(';') + '}</style>'; h = /<style id="baked">[\s\S]*?<\/style>/.test(h) ? h.replace(/<style id="baked">[\s\S]*?<\/style>/, css) : h.replace('</head>', css + '</head>'); }
-  return h;
-}
-$('saveHtml').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([bakeHtml()], {type: 'text/html'})); a.download = EDF.name.replace(/\.html?$/i, '') + '_edited.html'; document.body.appendChild(a); a.click(); a.remove(); msg('edMsg', '✓ الملف المعدّل نزل على جهازك.', 'ok'); };
-$('exportBtn').onclick = async () => {
-  if (!TOKEN) { msg('edMsg', 'اعمل الإعداد (خطوة 0) الأول علشان التصدير.', 'bad'); $('setup').scrollIntoView({behavior: 'smooth'}); return; }
-  if (pvWin && pvWin.pause) pvWin.pause();
-  msg('edMsg', 'بيرفع النسخة المعدّلة للريندر…');
-  await upload([new File([bakeHtml()], EDF.name.replace(/\.html?$/i, '') + '_edit.html', {type: 'text/html'})]);
-  msg('edMsg', '✓ اتبعت للريندر. هتلاقي الفيديو في «الفيديوهات الجاهزة» لما يخلص.', 'ok');
-};
-
-const fmtMin = s => s < 60 ? `${Math.round(s)} ث` : `${Math.floor(s / 60)} د ${Math.round(s % 60)} ث`;
-let ISSUE = null, LAST = '';
-async function refresh(){
-  if (!TOKEN) return;
-  const st = $('status'), jobs = $('jobs');
-  try {
-    const runs = await api('/actions/workflows/render.yml/runs?per_page=5');
-    const active = (runs.workflow_runs || []).filter(r => r.status !== 'completed');
-    const r = (runs.workflow_runs || [])[0];
-    if (active.length) st.innerHTML = `<div class="spin"></div><span class="pill run">بيترندر</span><span class="muted">${active.length > 1 ? active.length + ' طلبات في الطابور' : 'شغال دلوقتي'}</span>`;
-    else if (!r) st.innerHTML = '<span class="pill idle">مستني</span><span class="muted">لسه مفيش ريندر.</span>';
-    else if (r.conclusion === 'success') st.innerHTML = `<span class="pill ok">خلص ✓</span><span class="muted">آخر ريندر خلص ${new Date(r.updated_at).toLocaleString('ar-EG')}</span>`;
-    else st.innerHTML = `<span class="pill bad">حصل خطأ</span><a class="muted" href="${r.html_url}" target="_blank" rel="noopener">افتح التفاصيل على جيتهاب</a>`;
-    // per-file progress, written live by the render jobs into the "render-status" issue
-    const ids = new Set(active.map(x => x.id).concat(r ? [r.id] : []));
-    if (!ISSUE) { const is = await api('/issues?state=open&per_page=30').catch(() => []); const f = (is || []).find(i => i.title === 'render-status'); ISSUE = f ? f.number : null; }
-    if (ISSUE) {
-      const cs = await api(`/issues/${ISSUE}/comments?per_page=100`).catch(() => []);
-      const list = (cs || []).map(c => { try { return JSON.parse(c.body); } catch (e) { return null; } }).filter(j => j && ids.has(j.run));
-      jobs.innerHTML = list.map(j => { const now = Date.now() / 1000, el = (j.end || now) - j.start, p = Math.max(0, Math.min(100, j.p || 0));
-        const eta = p > 3 && !j.state ? ` · فاضل حوالي ${fmtMin(el * (100 - p) / p)}` : '';
-        const cls = j.state ? (j.state === 'success' ? 'done' : 'fail') : '';
-        const lbl = j.state ? (j.state === 'success' ? 'جاهز ✓' : 'وقف ✕') : p + '%';
-        return `<div class="job ${cls}"><div class="top"><span class="nm">${esc(j.name)}</span><span>${lbl}</span></div><div class="bar"><i style="width:${j.state ? 100 : p}%"></i></div><div class="muted" style="font-size:13px;margin-top:4px">بقاله ${fmtMin(el)}${eta}</div></div>`; }).join('');
-    }
-  } catch (e) { st.innerHTML = `<span class="pill bad">مش متوصل</span><span class="muted">${e.message}</span>`; }
-  try {
-    const rel = await api('/releases/tags/videos');
-    const all = rel.assets || [], by = n => all.find(a => a.name === n);
-    const assets = all.filter(a => a.name.endsWith('.mp4') && !a.name.endsWith('.preview.mp4')).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-    const sig = assets.map(a => a.id + ':' + a.updated_at).join(',') + all.length; if (sig === LAST) return; LAST = sig;
-    $('vids').innerHTML = assets.length ? '' : '<p class="muted">لسه مفيش فيديوهات.</p>';
-    assets.forEach(a => {
-      const base = a.name.slice(0, -4), pv = by(base + '.preview.mp4'), jpg = by(base + '.jpg');
-      const d = document.createElement('div'); d.className = 'vid';
-      d.innerHTML = `<button class="po" type="button" aria-label="شغّل"></button><div class="meta"><span class="n"></span><span class="muted">${(a.size / 1048576).toFixed(1)} MB · ${new Date(a.created_at).toLocaleDateString('ar-EG')}</span><div class="acts"><a href="${a.browser_download_url}" download>⬇ تحميل</a><button type="button">مسح</button></div></div>`;
-      d.querySelector('.n').textContent = base;
-      const po = d.querySelector('.po'); if (jpg) po.style.backgroundImage = `url("${jpg.browser_download_url}")`;
-      po.onclick = () => { const v = $('mv'); v.src = (pv || a).browser_download_url; $('modal').classList.add('on'); v.play().catch(() => {}); };
-      const del = d.querySelector('.acts button');
-      del.onclick = async () => { if (del.dataset.s !== '1') { del.dataset.s = '1'; del.textContent = 'متأكد؟'; setTimeout(() => { del.dataset.s = ''; del.textContent = 'مسح'; }, 3000); return; }
-        try { for (const x of [a, pv, jpg].filter(Boolean)) await api('/releases/assets/' + x.id, {method: 'DELETE'}); LAST = ''; refresh(); } catch (e) { del.textContent = 'ما اتمسحش'; } };
-      $('vids').appendChild(d);
-    });
-  } catch (e) { if (e.status !== 404) $('vids').innerHTML = `<p class="muted">مش قادر أجيب الفيديوهات: ${e.message}</p>`; }
-}
-const closeM = () => { const v = $('mv'); v.pause(); v.removeAttribute('src'); v.load(); $('modal').classList.remove('on'); };
-$('mx').onclick = closeM; $('modal').onclick = e => { if (e.target.id === 'modal') closeM(); };
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeM(); });
-$('secLink').href = 'https://github.com/' + REPO + '/settings/secrets/actions/new';
-$('repo').value = REPO;
-showSetup(); refresh(); setInterval(refresh, 10000);
-</script>
+<script src="studio.js"></script>
+<script src="editor.js"></script>
 </body>
 </html>
