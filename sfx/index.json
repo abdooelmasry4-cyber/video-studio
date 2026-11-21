@@ -1,0 +1,317 @@
+[
+{
+"id": "whoosh_fast",
+"ar": "ووش سريع",
+"cat": "whoosh",
+"dur": 1.44,
+"peak": 0.45
+},
+{
+"id": "whoosh_synth",
+"ar": "ووش ديجيتال",
+"cat": "whoosh",
+"dur": 1.584,
+"peak": 0.53
+},
+{
+"id": "swish_tiny",
+"ar": "سويش قصير",
+"cat": "whoosh",
+"dur": 0.288,
+"peak": 0.11
+},
+{
+"id": "whoosh_soft",
+"ar": "ووش ناعم",
+"cat": "whoosh",
+"dur": 1.296,
+"peak": 0.35
+},
+{
+"id": "whoosh_thud",
+"ar": "ووش بخبطة",
+"cat": "whoosh",
+"dur": 2.928,
+"peak": 0.44
+},
+{
+"id": "whoosh_quick",
+"ar": "ووش خفيف",
+"cat": "whoosh",
+"dur": 1.056,
+"peak": 0.22
+},
+{
+"id": "whoosh_bass",
+"ar": "ووش بباص",
+"cat": "whoosh",
+"dur": 1.848,
+"peak": 0.65
+},
+{
+"id": "swish_sharp",
+"ar": "سويش حاد",
+"cat": "whoosh",
+"dur": 0.408,
+"peak": 0.16
+},
+{
+"id": "whoosh_cinema",
+"ar": "ووش سينمائي",
+"cat": "impact",
+"dur": 4.152,
+"peak": 2.405
+},
+{
+"id": "whip",
+"ar": "ووش بكرباج",
+"cat": "whoosh",
+"dur": 1.56,
+"peak": 0.275
+},
+{
+"id": "impact_heavy",
+"ar": "خبطة تقيلة",
+"cat": "impact",
+"dur": 5.448,
+"peak": 2.03
+},
+{
+"id": "boom_deep",
+"ar": "بوم عميق",
+"cat": "impact",
+"dur": 8.4,
+"peak": 0.305
+},
+{
+"id": "brass_hit",
+"ar": "ضربة نحاس",
+"cat": "impact",
+"dur": 1.752,
+"peak": 0.335
+},
+{
+"id": "sub_drop",
+"ar": "باص دروب",
+"cat": "impact",
+"dur": 2.64,
+"peak": 1.855
+},
+{
+"id": "bass_hit",
+"ar": "باص خبطة",
+"cat": "impact",
+"dur": 3.264,
+"peak": 0.35
+},
+{
+"id": "thud",
+"ar": "خبطة",
+"cat": "impact",
+"dur": 0.864,
+"peak": 0.065
+},
+{
+"id": "smack",
+"ar": "ضربة/صفعة",
+"cat": "impact",
+"dur": 0.816,
+"peak": 0.09
+},
+{
+"id": "pop",
+"ar": "بوب",
+"cat": "ui",
+"dur": 0.312,
+"peak": 0.115
+},
+{
+"id": "pop_hollow",
+"ar": "بوب مجوف",
+"cat": "ui",
+"dur": 0.696,
+"peak": 0.05
+},
+{
+"id": "click",
+"ar": "كليك ماوس",
+"cat": "ui",
+"dur": 0.288,
+"peak": 0.24
+},
+{
+"id": "pen_click",
+"ar": "كليك قلم",
+"cat": "ui",
+"dur": 0.775,
+"peak": 0.255
+},
+{
+"id": "typing",
+"ar": "كتابة كيبورد",
+"cat": "ui",
+"dur": 4.0,
+"peak": 1.24
+},
+{
+"id": "camera",
+"ar": "كاميرا تصوير",
+"cat": "ui",
+"dur": 1.176,
+"peak": 0.97
+},
+{
+"id": "flash_charge",
+"ar": "شحن فلاش",
+"cat": "ui",
+"dur": 1.872,
+"peak": 0.22
+},
+{
+"id": "cash",
+"ar": "كاشير/كاتشينج",
+"cat": "money",
+"dur": 1.272,
+"peak": 0.21
+},
+{
+"id": "cash_ring",
+"ar": "جرس كاشير",
+"cat": "money",
+"dur": 2.736,
+"peak": 0.175
+},
+{
+"id": "coins",
+"ar": "فلوس بتقع",
+"cat": "money",
+"dur": 2.376,
+"peak": 0.575
+},
+{
+"id": "coins_rattle",
+"ar": "خشخشة فكة",
+"cat": "money",
+"dur": 1.68,
+"peak": 0.635
+},
+{
+"id": "ding",
+"ar": "نوتيفيكيشن",
+"cat": "ui",
+"dur": 0.72,
+"peak": 0.045
+},
+{
+"id": "success",
+"ar": "نجاح/صح",
+"cat": "result",
+"dur": 5.064,
+"peak": 1.245
+},
+{
+"id": "chime",
+"ar": "جرس رايق",
+"cat": "result",
+"dur": 4.632,
+"peak": 1.225
+},
+{
+"id": "sparkle",
+"ar": "لمعة/سحر",
+"cat": "result",
+"dur": 3.552,
+"peak": 0.7
+},
+{
+"id": "error",
+"ar": "غلط/بازر",
+"cat": "result",
+"dur": 1.248,
+"peak": 0.44
+},
+{
+"id": "beep",
+"ar": "بيب بيب",
+"cat": "ui",
+"dur": 0.432,
+"peak": 0.135
+},
+{
+"id": "riser",
+"ar": "رايزر",
+"cat": "riser",
+"dur": 4.08,
+"peak": 2.52
+},
+{
+"id": "riser_synth",
+"ar": "رايزر ديجيتال",
+"cat": "riser",
+"dur": 5.04,
+"peak": 1.975
+},
+{
+"id": "riser_pop",
+"ar": "رايزر ببوب",
+"cat": "riser",
+"dur": 2.904,
+"peak": 2.245
+},
+{
+"id": "drumroll",
+"ar": "طبلة ترقّب",
+"cat": "riser",
+"dur": 2.664,
+"peak": 2.3
+},
+{
+"id": "glitch",
+"ar": "جليتش",
+"cat": "fx",
+"dur": 1.032,
+"peak": 0.3
+},
+{
+"id": "glitch_stutter",
+"ar": "جليتش متقطع",
+"cat": "fx",
+"dur": 1.056,
+"peak": 0.67
+},
+{
+"id": "scratch",
+"ar": "سكراتش أسطوانة",
+"cat": "fx",
+"dur": 1.536,
+"peak": 0.955
+},
+{
+"id": "rewind",
+"ar": "ترجيع شريط",
+"cat": "fx",
+"dur": 1.944,
+"peak": 1.695
+},
+{
+"id": "clock",
+"ar": "ساعة بتتك",
+"cat": "fx",
+"dur": 3.913,
+"peak": 1.055
+},
+{
+"id": "heartbeat",
+"ar": "دقات قلب",
+"cat": "fx",
+"dur": 2.544,
+"peak": 0.095
+},
+{
+"id": "page",
+"ar": "قلب ورقة",
+"cat": "fx",
+"dur": 1.008,
+"peak": 0.5
+}
+]

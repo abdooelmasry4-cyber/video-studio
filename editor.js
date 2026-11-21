@@ -141,7 +141,7 @@ async function prepMediaMeta(){
 async function loadPeaks(id){ const m = P.media[id]; if (!m || m.kind === 'image' || m.peaks) return; try { const r = await post().bufPeaks(id, 2000); if (r) { m.peaks = r.p; drawTL(); } } catch (e) {} }
 function drawMediaGrid(){
   const g = $('mGrid'); if (!P) return;
-  const list = Object.entries(P.media);
+  const list = Object.entries(P.media).filter(([, m]) => !m.sfx);
   g.innerHTML = list.length ? '' : '<p class="hint" style="grid-column:1/-1">لسه مفيش ميديا. استورد فيديوهات أو صور أو صوت.</p>';
   for (const [id, m] of list) {
     const d = document.createElement('div'); d.className = 'mi';
@@ -165,6 +165,42 @@ function drawSfxList(){
     d.children[2].onclick = () => addLibSfx(n);
     box.appendChild(d);
   }
+}
+
+/* ============ pro SFX library (site /sfx) ============ */
+let PRO = [], PROCAT = 'all';
+const CATS = [['all', 'الكل'], ['whoosh', 'ووش'], ['impact', 'خبطات'], ['ui', 'كليك وبوب'], ['money', 'فلوس'], ['result', 'نتيجة'], ['riser', 'رايزر'], ['fx', 'تأثيرات']];
+fetch('sfx/index.json?v=1').then(r => r.json()).then(j => { PRO = j; drawPro(); }).catch(() => {});
+function drawPro(){
+  const cats = $('proCats'), list = $('proList'); if (!cats) return;
+  cats.innerHTML = ''; for (const [k, n] of CATS) { const b = document.createElement('button'); b.type = 'button'; b.textContent = n; if (k === PROCAT) b.className = 'on'; b.onclick = () => { PROCAT = k; drawPro(); }; cats.appendChild(b); }
+  const q = ($('proQ').value || '').trim(); list.innerHTML = '';
+  for (const s of PRO.filter(x => (PROCAT === 'all' || x.cat === PROCAT) && (!q || x.ar.includes(q) || x.id.includes(q)))) {
+    const d = document.createElement('div'); d.className = 'sfxi';
+    d.innerHTML = `<button type="button" title="اسمع">▶</button><span></span><button class="add" type="button" title="ضيف عند المؤشر">＋</button>`;
+    d.querySelector('span').textContent = s.ar;
+    d.children[0].onclick = () => { const a = new Audio('sfx/' + s.id + '.mp3'); a.volume = .7; a.play(); };
+    d.children[2].onclick = () => addProSfx(s);
+    list.appendChild(d);
+  }
+}
+$('proQ').oninput = drawPro;
+const PROMEDIA = {};
+async function addProSfx(s){
+  if (!P || !post()) return;
+  let id = PROMEDIA[s.id];
+  if (!id || !P.media[id]) {
+    const blob = await (await fetch('sfx/' + s.id + '.mp3')).blob();
+    id = PROMEDIA[s.id] = 'm' + s.id.replace(/[^a-z0-9]/gi, '');
+    const url = URL.createObjectURL(blob);
+    P.media[id] = {blob, kind: 'audio', name: s.ar, mime: 'audio/mpeg', url, dur: s.dur, sfx: true};
+    P.cut.media[id] = {kind: 'audio', name: s.ar, mime: 'audio/mpeg', dur: s.dur};
+    post().setMedia(id, url); loadPeaks(id);
+  }
+  snapUndo();
+  const st = Math.max(0, T - s.peak), inn = Math.max(0, s.peak - T);
+  const a = {id: uid('a'), mid: id, start: r3(st), in: r3(inn), dur: r3(s.dur - inn), vol: .7, fin: 0, fout: .05, duck: false, sfx: true};
+  cut().au.push(a); SEL = {k: 'au', id: a.id}; changed(); drawMediaGrid();
 }
 
 /* ============ adding things ============ */
@@ -312,8 +348,8 @@ function drawTL(){
   }
   // audio clips
   for (const a of aus) {
-    const sel = SEL && SEL.k === 'au' && SEL.id === a.id, lib = a.mid.startsWith('lib:'), m = lib ? null : P.media[a.mid] || {};
-    const lab = lib ? '♪ ' + (SFX_AR[a.mid.slice(4)] || a.mid.slice(4)) : '♫ ' + (m.name || 'صوت');
+    const sel = SEL && SEL.k === 'au' && SEL.id === a.id, m0 = P.media[a.mid] || {}, lib = a.mid.startsWith('lib:') || a.sfx || m0.sfx, m = a.mid.startsWith('lib:') ? null : m0;
+    const lab = a.mid.startsWith('lib:') ? '♪ ' + (SFX_AR[a.mid.slice(4)] || a.mid.slice(4)) : (lib ? '♪ ' : '♫ ') + (m.name || 'صوت');
     h += `<div class="clip ${lib ? 'sfxc' : 'au'}${sel ? ' sel' : ''}" data-k="au" data-id="${a.id}" style="left:${xOf(a.start)}px;width:${Math.max(6, a.dur * PX - 1)}px;top:${rowY['au' + a._lane] + 4}px;height:32px">` +
       `<canvas data-wave="au:${a.id}"></canvas><span class="lab">${esc(lab)}${a.duck ? '' : ''}</span><i class="h l"></i><i class="h r"></i></div>`;
   }
@@ -620,7 +656,7 @@ function showInsp(){
     return;
   }
   if (SEL.k === 'au') {
-    const a = it, lib = a.mid.startsWith('lib:');
+    const a = it, lib = a.mid.startsWith('lib:') || a.sfx;
     box.innerHTML = `<h3>${lib ? 'مؤثر صوتي' : 'صوت / موسيقى'} <span class="chip">${a.dur.toFixed(2)}s</span></h3>`;
     const s1 = sec('المستوى'); s1.appendChild(slider('الصوت', a.vol, 0, 2, .01, v => { a.vol = v; changed({insp: false}); }, pct));
     s1.appendChild(slider('ظهور تدريجي', a.fin || 0, 0, 5, .05, v => { a.fin = v; changed({insp: false}); }, v => v.toFixed(2) + 's'));
@@ -708,7 +744,7 @@ const idb = () => new Promise((res, rej) => { const r = indexedDB.open('motion-s
 async function autosave(){
   if (!P) return;
   try {
-    const db = await idb(); const media = {}; for (const [id, m] of Object.entries(P.media)) media[id] = {blob: m.blob, kind: m.kind, name: m.name, mime: m.mime, dur: m.dur, w: m.w, h: m.h, thumb: m.thumb};
+    const db = await idb(); const media = {}; for (const [id, m] of Object.entries(P.media)) media[id] = {blob: m.blob, kind: m.kind, name: m.name, mime: m.mime, dur: m.dur, w: m.w, h: m.h, thumb: m.thumb, sfx: m.sfx};
     const rec = {name: $('pName').value || P.name, html: P.html, ed: P.ed, cut: P.cut, colors: P.colors, media, at: Date.now()};
     await new Promise((res, rej) => { const tx = db.transaction('p', 'readwrite'); tx.objectStore('p').put(rec, 'last'); tx.oncomplete = res; tx.onerror = () => rej(tx.error); });
     $('savedLbl').textContent = 'محفوظ تلقائي ✓'; offerResume();
