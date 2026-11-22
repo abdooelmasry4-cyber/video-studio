@@ -83,7 +83,11 @@ for (const file of files) {
   const side = (() => { try { return JSON.parse(fs.readFileSync(file.replace(/\.html$/, '.json'), 'utf8')); } catch { return {}; } })();
   const ours = /id="reel"/.test(html) && /function\s+render\s*\(/.test(html);
   const FPS = Number(side.fps) || Number(fpsArg);
-  const [W, H] = [Number(side.w) || 1080, Number(side.h) || 1920];
+  // our pages declare their own frame: a landscape .reel (e.g. 720x405) renders 1920x1080, a square one 1080x1080
+  const reelCss = (html.match(/\.reel\s*\{[^}]*\}/) || [''])[0];
+  const rw = +((reelCss.match(/(?:^|[;{\s])width:\s*(\d+)px/) || [])[1] || 0), rh = +((reelCss.match(/(?:^|[;{\s])height:\s*(\d+)px/) || [])[1] || 0);
+  const AUTO = rw && rh ? (rw > rh ? [1920, 1080] : rw === rh ? [1080, 1080] : [1080, 1920]) : [1080, 1920];
+  const [W, H] = [Number(side.w) || AUTO[0], Number(side.h) || AUTO[1]];
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'rs-'));
   // audio: editable pages mix voice+SFX themselves; otherwise an embedded <audio> or a sidecar audio file
   let audioPath = null;

@@ -76,8 +76,15 @@ function previewHtml(){
   h = h.replace('</head>', fit + '</head>');
   return h.replace(/<\/body>(?![\s\S]*<\/body>)/i, cd + '<script id="post-rt">' + POSTJS + '</script></body>');
 }
+function reelAR(html){
+  const c = ((html || '').match(/\.reel\s*\{[^}]*\}/) || [''])[0];
+  const w = +((c.match(/(?:^|[;{\s])width:\s*(\d+)px/) || [])[1] || 0), h = +((c.match(/(?:^|[;{\s])height:\s*(\d+)px/) || [])[1] || 0);
+  return w && h ? `${w}/${h}` : '9/16';
+}
 function loadPreview(){
   const pv = $('pv');
+  { const ar = reelAR(P.html), [aw, ah] = ar.split('/').map(Number), bx = $('pvBox'); bx.style.aspectRatio = ar;
+    if (aw > ah) { bx.style.height = 'auto'; bx.style.width = '100%'; bx.style.maxHeight = '100%'; } else { bx.style.height = ''; bx.style.width = ''; bx.style.maxHeight = ''; } }
   pv.onload = async () => {
     pvWin = pv.contentWindow;
     try { await pvWin.document.fonts.ready; } catch (e) {}
